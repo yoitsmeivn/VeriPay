@@ -14,7 +14,8 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
-import { Sidebar } from '../components/Sidebar.js';
+import { AppShell } from '../components/AppShell.js';
+import { RoleTag } from '../components/RoleTag.js';
 import { TrustPanel } from '../components/TrustPanel.js';
 import { copyDealLink } from '../lib/copy-deal-link.js';
 
@@ -124,10 +125,7 @@ export function DealDetail(): React.JSX.Element {
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
-
-      <main className="flex-1 px-14 pb-14 pt-9">
+    <AppShell className="px-14 pb-14 pt-9">
         <Link to="/" className="text-[14px] font-medium text-muted hover:text-foreground">
           ← Back to deals
         </Link>
@@ -141,10 +139,7 @@ export function DealDetail(): React.JSX.Element {
               <Chip color={meta.color} variant="soft" size="sm">
                 {meta.label}
               </Chip>
-              <Chip variant="tertiary" size="sm">
-                <Icon icon={isSeller ? 'solar:tag-linear' : 'solar:cart-large-2-linear'} width={13} />
-                {isSeller ? 'Seller' : 'Buyer'}
-              </Chip>
+              <RoleTag side={isSeller ? 'Seller' : 'Buyer'} />
             </div>
             <p className="mt-1.5 text-[14px] text-muted">
               You&rsquo;re {isSeller ? 'selling' : 'buying'} · Deal #A7F3
@@ -209,8 +204,7 @@ export function DealDetail(): React.JSX.Element {
             />
           )}
         </div>
-      </main>
-    </div>
+    </AppShell>
   );
 }
 

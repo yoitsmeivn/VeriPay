@@ -13,7 +13,8 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Sidebar } from '../components/Sidebar.js';
+import { AppShell } from '../components/AppShell.js';
+import { RoleTag } from '../components/RoleTag.js';
 import { copyDealLink } from '../lib/copy-deal-link.js';
 
 type ChipColor = 'default' | 'accent' | 'success' | 'warning';
@@ -133,13 +134,7 @@ function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
           <Chip color={toGroup(deal.status).color} variant="soft" size="sm">
             {toGroup(deal.status).label}
           </Chip>
-          <Chip variant="tertiary" size="sm">
-            <Icon
-              icon={deal.side === 'Buyer' ? 'solar:cart-large-2-linear' : 'solar:tag-linear'}
-              width={13}
-            />
-            {deal.side}
-          </Chip>
+          <RoleTag side={deal.side} />
         </div>
         <span className="text-[13px] font-medium text-muted">{deal.id}</span>
       </div>
@@ -195,10 +190,7 @@ export function Dashboard(): React.JSX.Element {
   const visibleDeals = tab === 'All' ? DEALS : DEALS.filter((deal) => toGroup(deal.status).label === tab);
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <Sidebar />
-
-      <main className="flex-1 px-14 pb-16 pt-10">
+    <AppShell className="px-14 pb-16 pt-10">
         <div className="flex items-center justify-between">
           <div>
             <Typography type="h3" className="text-[28px] font-semibold tracking-[-0.03em]">
@@ -237,7 +229,6 @@ export function Dashboard(): React.JSX.Element {
             <DealCard key={deal.id} deal={deal} />
           ))}
         </div>
-      </main>
-    </div>
+    </AppShell>
   );
 }

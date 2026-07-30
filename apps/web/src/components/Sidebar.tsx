@@ -1,4 +1,4 @@
-import { Avatar, Button, Surface } from '@heroui/react';
+import { Avatar, Button } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
@@ -16,47 +16,45 @@ export function Sidebar(): React.JSX.Element {
   const { pathname } = useLocation();
 
   return (
-    <Surface
-      variant="default"
-      className="flex w-[252px] shrink-0 flex-col gap-2 rounded-none border-r border-border px-4 pb-5 pt-[22px]"
-    >
-      <Link to="/" className="mb-1 px-2 py-1 text-foreground">
-        <Logo className="h-[22px] w-auto" />
+    <aside className="flex w-[236px] shrink-0 flex-col gap-1 border-r border-border bg-background-secondary px-3 pb-4 pt-4">
+      <Link to="/" className="mb-2 px-2 pt-1 text-foreground">
+        <Logo className="h-5 w-auto" />
       </Link>
 
-      <Button className="w-full" onPress={() => navigate('/create')}>
-        <Icon icon="solar:add-circle-linear" width={18} />
+      <Button size="sm" className="w-full" onPress={() => navigate('/create')}>
+        <Icon icon="solar:add-circle-linear" width={16} />
         New deal
       </Button>
 
-      <div className="mt-2 flex flex-col gap-1">
+      <nav className="mt-3 flex flex-col gap-0.5">
         {NAV.map((item) => {
           const isActive = item.to === pathname;
           return (
             <Button
               key={item.label}
+              size="sm"
               variant={isActive ? 'secondary' : 'ghost'}
-              className={`w-full justify-start gap-[11px] font-${isActive ? 'semibold' : 'medium'} ${
-                isActive ? 'text-foreground' : 'text-muted'
+              className={`w-full justify-start gap-2.5 px-2.5 text-[13.5px] ${
+                isActive ? 'font-semibold text-foreground' : 'font-medium text-muted'
               }`}
               onPress={() => navigate(item.to)}
             >
-              <Icon icon={item.icon} width={18} className={isActive ? '' : 'opacity-70'} />
+              <Icon icon={item.icon} width={16} className={isActive ? '' : 'opacity-70'} />
               {item.label}
             </Button>
           );
         })}
-      </div>
+      </nav>
 
-      <div className="mt-auto flex items-center gap-2.5 px-2 pt-2.5">
+      <div className="mt-auto flex items-center gap-2.5 rounded-lg px-2 py-1.5">
         <Avatar size="sm">
-          <Avatar.Fallback className="bg-accent-soft text-accent">AB</Avatar.Fallback>
+          <Avatar.Fallback className="bg-accent-soft text-[11px] text-accent">AB</Avatar.Fallback>
         </Avatar>
         <div className="min-w-0">
-          <p className="text-[14px] font-semibold text-foreground">Amir Beck</p>
-          <p className="truncate text-[12px] text-muted">beck@amirbeck.com</p>
+          <p className="text-[13px] font-semibold leading-tight text-foreground">Amir Beck</p>
+          <p className="truncate text-[11px] leading-tight text-muted">beck@amirbeck.com</p>
         </div>
       </div>
-    </Surface>
+    </aside>
   );
 }
