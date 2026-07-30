@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@veripay/config/tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false
+  },
+  // vitest.config.ts is included so the linter's project service can type it.
+  // The build config (tsconfig.build.json) still compiles src/ only, with
+  // `types: []`, which is what keeps this package isomorphic.
+  "include": ["src/**/*.ts", "vitest.config.ts"]
+}

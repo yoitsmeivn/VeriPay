@@ -1,0 +1,2 @@
+# Drizzle keeps generated migration SQL and its journal here.
+# Committed on purpose: migrations are part of the source of truth.

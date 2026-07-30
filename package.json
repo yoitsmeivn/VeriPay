@@ -1,0 +1,42 @@
+{
+  "name": "veripay",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "VeriPay — peer-to-peer conditional payment platform",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run build:packages && concurrently -k -n pkg,api,web -c gray,cyan,magenta \"npm run watch:packages\" \"npm run dev -w @veripay/api\" \"npm run dev -w @veripay/web\"",
+    "dev:api": "npm run build:packages && npm run dev -w @veripay/api",
+    "dev:web": "npm run dev -w @veripay/web",
+    "watch:packages": "tsc -b packages/shared/tsconfig.build.json packages/database/tsconfig.build.json --watch --preserveWatchOutput",
+    "build:packages": "tsc -b packages/shared/tsconfig.build.json packages/database/tsconfig.build.json",
+    "build": "npm run build:packages && npm run build -w @veripay/api && npm run build -w @veripay/web",
+    "typecheck": "npm run build:packages && npm run typecheck --workspaces --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "rm -rf apps/*/dist packages/*/dist apps/*/*.tsbuildinfo packages/*/*.tsbuildinfo coverage",
+    "db:generate": "npm run db:generate -w @veripay/database",
+    "db:migrate": "npm run db:migrate -w @veripay/database"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "@veripay/config": "*",
+    "concurrently": "^10.0.4",
+    "eslint": "^10.8.0",
+    "prettier": "^3.9.6",
+    "typescript": "6.0.3",
+    "vitest": "^4.1.10"
+  }
+}

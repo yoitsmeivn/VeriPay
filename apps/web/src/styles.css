@@ -1,0 +1,132 @@
+:root {
+  --surface: #ffffff;
+  --surface-muted: #f4f5f7;
+  --text: #16181d;
+  --text-muted: #5c6370;
+  --border: #dcdfe4;
+  --accent: #1f6feb;
+  --ok: #1a7f4b;
+  --error: #b4232c;
+
+  color-scheme: light dark;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #14161a;
+    --surface-muted: #1c1f25;
+    --text: #e8eaed;
+    --text-muted: #9aa2ae;
+    --border: #2c313a;
+    --accent: #6ea8ff;
+    --ok: #4ec98a;
+    --error: #ff8087;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.app {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.app__header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.app__tagline {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+}
+
+.app__panel {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+}
+
+.app__panel h2 {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.app__hint {
+  margin: 1rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  font-size: 0.875em;
+}
+
+.status {
+  margin: 0;
+}
+
+.status--pending {
+  color: var(--text-muted);
+}
+
+.status--error {
+  color: var(--error);
+}
+
+.status--error p {
+  margin: 0;
+}
+
+.status__detail {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.status--ok {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 1rem;
+}
+
+.status--ok dt {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.status--ok dd {
+  margin: 0.125rem 0 0;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.status--ok > div:first-child dd {
+  color: var(--ok);
+}

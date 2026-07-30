@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@veripay/config/tsconfig.react.json",
+  "compilerOptions": {
+    "types": ["vite/client"]
+  },
+  // The Vite and Vitest config files are included so the linter's project
+  // service can type them, matching how the other workspaces are set up.
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "vitest.config.ts"]
+}

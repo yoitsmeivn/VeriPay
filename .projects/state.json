@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "providers": {
+    "supabase": {
+      "name": "Supabase"
+    }
+  },
+  "resources": {
+    "supabase-plan": {
+      "name": "supabase-plan",
+      "providerName": "Supabase",
+      "serviceId": "free"
+    },
+    "veripay": {
+      "name": "veripay",
+      "providerName": "Supabase",
+      "serviceId": "project"
+    }
+  }
+}

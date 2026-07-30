@@ -1,0 +1,26 @@
+node_modules/
+dist/
+coverage/
+.vite/
+*.tsbuildinfo
+
+# Stripe Projects generated state, cache and vault.
+.projects/
+
+# Stripe Projects managed files. Reformatting them only creates churn — the
+# CLI regenerates them.
+.agents/skills/stripe-projects-cli/
+.agents/skills/sp-supabase/
+.claude/settings.json
+.cursor/
+
+# These two contain `stripe-projects-cli managed:*` marker blocks that the CLI
+# rewrites. Prettier inserts blank lines inside those markers, so the files are
+# formatted by hand instead. Keep the managed regions byte-identical.
+AGENTS.md
+CLAUDE.md
+
+# Drizzle-generated SQL and journal files.
+packages/database/drizzle/
+
+package-lock.json
