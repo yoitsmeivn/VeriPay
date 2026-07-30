@@ -393,11 +393,14 @@ function CompletedCards({ isSeller }: { isSeller: boolean }): React.JSX.Element 
             </div>
           </div>
           <Separator />
-          <div className="flex items-start justify-between">
-            {PAYOUT_STEPS.map((step) => (
-              <div key={step.label} className="flex flex-1 flex-col items-center gap-2">
-                <div className="grid size-6 place-items-center rounded-full bg-accent text-accent-foreground">
-                  <Icon icon="solar:check-bold" width={12} />
+          <div className="flex items-start">
+            {PAYOUT_STEPS.map((step, i) => (
+              <div key={step.label} className="relative flex flex-1 flex-col items-center gap-2">
+                {i < PAYOUT_STEPS.length - 1 ? (
+                  <span className="absolute left-1/2 top-3 h-0.5 w-full -translate-y-1/2 bg-accent" />
+                ) : null}
+                <div className="relative z-10 grid size-6 place-items-center rounded-full bg-accent text-accent-foreground">
+                  <Icon icon="solar:check-bold" width={13} className="text-accent-foreground" />
                 </div>
                 <div className="text-center">
                   <p className="text-[13px] font-semibold">{step.label}</p>
