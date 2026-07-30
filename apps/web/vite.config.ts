@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
@@ -5,7 +6,7 @@ import { defineConfig } from 'vite';
 const WEB_PORT = 5173;
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   // The monorepo keeps a single .env at the repository root, so Vite is
   // pointed there instead of apps/web. Only VITE_-prefixed variables are
   // exposed to the browser bundle — server secrets in the same file are not.

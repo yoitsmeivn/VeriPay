@@ -1,132 +1,74 @@
-:root {
-  --surface: #ffffff;
-  --surface-muted: #f4f5f7;
-  --text: #16181d;
-  --text-muted: #5c6370;
-  --border: #dcdfe4;
-  --accent: #1f6feb;
-  --ok: #1a7f4b;
-  --error: #b4232c;
+@import 'tailwindcss';
+@import '@heroui/styles';
 
-  color-scheme: light dark;
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    sans-serif;
-  line-height: 1.5;
+@theme {
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+
+  --color-background: #f4f5f7;
+  --color-background-secondary: #eaebed;
+  --color-surface: #ffffff;
+  --color-foreground: #18181b;
+  --color-muted: #6f7370;
+  --color-border: #dcdedd;
+  --color-separator: rgba(0, 0, 0, 0.1);
+  --color-accent: #0d6b3f;
+  --color-accent-foreground: #fcfcfc;
+  --color-accent-soft: rgba(13, 107, 63, 0.12);
+  --color-success: #5fc43e;
+  --color-success-soft: rgba(95, 196, 62, 0.15);
+  --color-warning: #ff9d3b;
+  --color-warning-soft: rgba(255, 157, 59, 0.15);
+  --color-danger: #fe3263;
+  --color-danger-soft: rgba(254, 50, 99, 0.15);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --surface: #14161a;
-    --surface-muted: #1c1f25;
-    --text: #e8eaed;
-    --text-muted: #9aa2ae;
-    --border: #2c313a;
-    --accent: #6ea8ff;
-    --ok: #4ec98a;
-    --error: #ff8087;
-  }
+/* Retheme HeroUI's accent tokens to the VeriPay green */
+:root,
+[data-theme='light'] {
+  --accent: #0d6b3f;
+  --accent-foreground: #fcfcfc;
+  --accent-hover: #307950;
+  --accent-soft: rgba(13, 107, 63, 0.14);
+  --accent-soft-foreground: #1b5134;
+  --accent-soft-hover: rgba(13, 107, 63, 0.2);
+  --focus: #0d6b3f;
 }
 
-* {
-  box-sizing: border-box;
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--surface);
-  color: var(--text);
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  line-height: 1.5;
 }
 
-.app {
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: 4rem 1.5rem;
+/* VeriPay atmospheric surfaces */
+.hero-gradient {
+  background:
+    radial-gradient(115% 75% at 50% 0%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 58%),
+    linear-gradient(180deg, #082d1b 0%, #0e5332 55%, #1a7a4a 100%);
 }
 
-.app__header h1 {
-  margin: 0;
-  font-size: 2rem;
-  letter-spacing: -0.02em;
+.footer-gradient {
+  background: linear-gradient(180deg, #0e5332 0%, #082d1b 100%);
 }
 
-.app__tagline {
-  margin: 0.25rem 0 0;
-  color: var(--text-muted);
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
-.app__panel {
-  margin-top: 2.5rem;
-  padding: 1.5rem;
-  background: var(--surface-muted);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-}
-
-.app__panel h2 {
-  margin: 0 0 1rem;
-  font-size: 0.8125rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-}
-
-.app__hint {
-  margin: 1rem 0 0;
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-}
-
-code {
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
-  font-size: 0.875em;
-}
-
-.status {
-  margin: 0;
-}
-
-.status--pending {
-  color: var(--text-muted);
-}
-
-.status--error {
-  color: var(--error);
-}
-
-.status--error p {
-  margin: 0;
-}
-
-.status__detail {
-  margin-top: 0.25rem;
-  font-size: 0.875rem;
-  color: var(--text-muted);
-}
-
-.status--ok {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
-  gap: 1rem;
-}
-
-.status--ok dt {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-}
-
-.status--ok dd {
-  margin: 0.125rem 0 0;
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-}
-
-.status--ok > div:first-child dd {
-  color: var(--ok);
+.card-shadow {
+  box-shadow:
+    0 16px 40px -6px rgba(10, 40, 24, 0.12),
+    0 1px 0 0 rgba(0, 0, 0, 0.02);
 }
