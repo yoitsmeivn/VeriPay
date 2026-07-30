@@ -4,12 +4,14 @@ import {
   Chip,
   Input,
   Separator,
+  TextArea,
   toast,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from '@heroui/react';
 import { Icon } from '@iconify/react';
+import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { Sidebar } from '../components/Sidebar.js';
@@ -275,32 +277,7 @@ function ActionCard({
 
   // held
   return isSeller ? (
-    <Card className="flex flex-col gap-4 p-7">
-      <div>
-        <p className="text-[16px] font-semibold tracking-[-0.01em]">Deliver the item</p>
-        <p className="mt-1 text-[14px] text-muted">
-          Delivered in the app? Send a secure link. Handled it in person or on another platform? Just add a
-          note.
-        </p>
-      </div>
-      <ToggleButtonGroup selectionMode="single" defaultSelectedKeys={['link']}>
-        <ToggleButton id="link" className="flex-1">
-          <Icon icon="solar:link-linear" width={16} />
-          Send a link
-        </ToggleButton>
-        <ToggleButton id="note" className="flex-1">
-          <Icon icon="solar:notes-linear" width={16} />
-          Add a note
-        </ToggleButton>
-      </ToggleButtonGroup>
-      <Input placeholder="Paste the delivery link — AXS transfer, Drive file, tracking #…" />
-      <p className="text-[13px] text-muted">
-        The buyer gets it instantly in-app and by email. We log the handoff for both of you.
-      </p>
-      <Button className="w-full" onPress={onDeliver}>
-        Send link &amp; mark delivered
-      </Button>
-    </Card>
+    <DeliverCard onDeliver={onDeliver} />
   ) : (
     <Card className="flex flex-col gap-4 p-7">
       <div>
@@ -318,6 +295,65 @@ function ActionCard({
       <Button className="w-full" onPress={onConfirm}>
         <Icon icon="solar:check-circle-linear" width={16} />
         Confirm receipt &amp; release funds
+      </Button>
+    </Card>
+  );
+}
+
+function DeliverCard({ onDeliver }: { onDeliver: () => void }): React.JSX.Element {
+  const [method, setMethod] = useState<'link' | 'note'>('link');
+
+  return (
+    <Card className="flex flex-col gap-4 p-7">
+      <div>
+        <p className="text-[16px] font-semibold tracking-[-0.01em]">Deliver the item</p>
+        <p className="mt-1 text-[14px] text-muted">
+          Delivered in the app? Send a secure link. Handled it in person or on another platform? Just add a
+          note.
+        </p>
+      </div>
+
+      <ToggleButtonGroup
+        selectionMode="single"
+        disallowEmptySelection
+        selectedKeys={[method]}
+        onSelectionChange={(keys) => {
+          const next = [...keys][0];
+          if (next === 'link' || next === 'note') setMethod(next);
+        }}
+      >
+        <ToggleButton id="link" className="flex-1">
+          <Icon icon="solar:link-linear" width={16} />
+          Send a link
+        </ToggleButton>
+        <ToggleButton id="note" className="flex-1">
+          <Icon icon="solar:notes-linear" width={16} />
+          Add a note
+        </ToggleButton>
+      </ToggleButtonGroup>
+
+      {method === 'link' ? (
+        <>
+          <Input placeholder="Paste the delivery link — AXS transfer, Drive file, tracking #…" />
+          <p className="text-[13px] text-muted">
+            The buyer gets it instantly in-app and by email. We log the handoff for both of you.
+          </p>
+        </>
+      ) : (
+        <>
+          <TextArea
+            className="h-24 w-full"
+            placeholder="Describe how you delivered it — e.g. handed off in person at the venue, or sent via AXS to their email…"
+          />
+          <p className="text-[13px] text-muted">
+            Use this when the handoff happened in person or on another platform. Your note is shared with
+            the buyer.
+          </p>
+        </>
+      )}
+
+      <Button className="w-full" onPress={onDeliver}>
+        {method === 'link' ? 'Send link' : 'Save note'} &amp; mark delivered
       </Button>
     </Card>
   );

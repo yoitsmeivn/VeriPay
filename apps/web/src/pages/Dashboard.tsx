@@ -83,19 +83,22 @@ const DEALS: Deal[] = [
   },
 ];
 
-const TABS = [
-  { label: 'All', count: 15 },
-  { label: 'New', count: 2 },
-  { label: 'In-progress', count: 5 },
-  { label: 'Completed', count: 8 },
-];
-
 /** Connected and Held both surface as a single "In-progress" group. */
 function toGroup(status: string): { label: 'New' | 'In-progress' | 'Completed'; color: ChipColor } {
   if (status === 'New') return { label: 'New', color: 'default' };
   if (status === 'Completed') return { label: 'Completed', color: 'success' };
   return { label: 'In-progress', color: 'accent' };
 }
+
+const GROUPS = ['New', 'In-progress', 'Completed'] as const;
+
+const TABS = [
+  { label: 'All', count: DEALS.length },
+  ...GROUPS.map((label) => ({
+    label,
+    count: DEALS.filter((deal) => toGroup(deal.status).label === label).length,
+  })),
+];
 
 function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
   const navigate = useNavigate();
@@ -189,7 +192,7 @@ function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
 export function Dashboard(): React.JSX.Element {
   const navigate = useNavigate();
   const [tab, setTab] = useState('All');
-  const visibleDeals = tab === 'All' ? DEALS : DEALS.filter((deal) => deal.status === tab);
+  const visibleDeals = tab === 'All' ? DEALS : DEALS.filter((deal) => toGroup(deal.status).label === tab);
 
   return (
     <div className="flex min-h-screen bg-background">
