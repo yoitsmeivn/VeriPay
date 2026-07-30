@@ -16,7 +16,7 @@ export function Sidebar(): React.JSX.Element {
   const { pathname } = useLocation();
 
   return (
-    <aside className="flex w-[236px] shrink-0 flex-col gap-1 border-r border-border bg-background-secondary px-3 pb-4 pt-4">
+    <aside className="sticky top-0 flex h-screen w-[236px] shrink-0 flex-col gap-1 self-start border-r border-border bg-background-secondary px-3 pb-4 pt-4">
       <Link to="/" className="mb-2 px-2 pt-1 text-foreground">
         <Logo className="h-5 w-auto" />
       </Link>

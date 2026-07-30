@@ -14,11 +14,9 @@ export function AppShell({
   className?: string;
 }): React.JSX.Element {
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex min-h-screen bg-background">
       <Sidebar />
-      <main className={`h-full min-h-0 flex-1 overflow-y-auto${className ? ` ${className}` : ''}`}>
-        {children}
-      </main>
+      <main className={`min-w-0 flex-1${className ? ` ${className}` : ''}`}>{children}</main>
     </div>
   );
 }
