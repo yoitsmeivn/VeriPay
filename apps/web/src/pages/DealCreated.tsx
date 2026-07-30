@@ -26,7 +26,7 @@ export function DealCreated(): React.JSX.Element {
     <div className="min-h-screen bg-background">
       <MinimalHeader context="Deal created" />
 
-      <div className="mx-auto flex w-full max-w-[560px] px-6 pb-20 pt-16">
+      <div className="mx-auto flex w-full max-w-[560px] px-6 pb-16 pt-8">
         <Card className="flex w-full flex-col items-center gap-5 p-11 text-center">
           <div className="grid size-16 place-items-center rounded-full bg-accent-soft">
             <Icon icon="solar:check-circle-bold" width={32} className="text-accent" />

@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@heroui/react';
 import { Icon } from '@iconify/react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { MinimalHeader } from '../components/MinimalHeader.js';
 
@@ -22,11 +22,7 @@ export function CreateDeal(): React.JSX.Element {
     <div className="min-h-screen bg-background">
       <MinimalHeader context="New deal" />
 
-      <div className="mx-auto flex w-full max-w-[620px] flex-col gap-6 px-6 pb-20 pt-11">
-        <Link to="/" className="text-[14px] font-medium text-muted hover:text-foreground">
-          ← Back to dashboard
-        </Link>
-
+      <div className="mx-auto flex w-full max-w-[620px] flex-col gap-6 px-6 pb-16 pt-8">
         <div>
           <Typography type="h3" className="text-[28px] font-semibold tracking-[-0.03em]">
             Create a deal

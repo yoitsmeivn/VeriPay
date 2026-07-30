@@ -12,6 +12,7 @@
 
   --color-background: #f4f5f7;
   --color-background-secondary: #eaebed;
+  --color-header-border: #eaebed;
   --color-surface: oklch(100% 0 0 / 0.52);
   --color-foreground: #18181b;
   --color-muted: #6f7371;

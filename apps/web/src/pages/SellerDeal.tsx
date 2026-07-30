@@ -82,6 +82,10 @@ export function SellerDeal(): React.JSX.Element {
               <Chip color="accent" variant="soft" size="sm">
                 Held
               </Chip>
+              <Chip variant="tertiary" size="sm">
+                <Icon icon="solar:tag-linear" width={13} />
+                Seller
+              </Chip>
             </div>
             <p className="mt-1.5 text-[14px] text-muted">
               You&rsquo;re selling · Deal #A7F3 · Buyer funded Jun 14
