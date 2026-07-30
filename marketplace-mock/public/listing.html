@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Listing (Mock)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <div class="logo">facebook</div>
+      <div class="search-box">🔍 Search Marketplace</div>
+    </div>
+    <div class="navbar-title">Marketplace</div>
+    <div class="navbar-right">
+      <div class="pill">🏠</div>
+    </div>
+  </nav>
+
+  <a href="/index.html" class="back-link">&larr; Back to Marketplace</a>
+
+  <div id="detail-container">
+    <div class="loading">Loading listing...</div>
+  </div>
+
+  <!-- Chat modal (shared component) -->
+  <div id="chat-overlay" class="modal-overlay">
+    <div class="chat-window">
+      <div class="chat-header">
+        <div class="who">
+          <span id="chat-seller-avatar"></span>
+          <span id="chat-seller-name"></span>
+        </div>
+        <button id="chat-close-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="chat-context">
+        📦 <span id="chat-listing-title"></span> · <strong id="chat-listing-price"></strong>
+      </div>
+      <div id="chat-messages" class="chat-messages"></div>
+      <div class="chat-input-row">
+        <input id="chat-input" type="text" placeholder="Type a message..." />
+        <button id="chat-send-btn">&#10148;</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/chat.js"></script>
+  <script>
+    let currentListing = null;
+
+    function getListingId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("id");
+    }
+
+    function renderListing(listing) {
+      const container = document.getElementById("detail-container");
+      // Direction comes from the server; never inferred from the listing shape.
+      const userSells = listing.direction === "user-sells";
+      // The person on the other side of the chat.
+      const other = userSells ? listing.counterparty : listing.seller;
+      const ctaLabel = userSells ? "💬 Message Buyer" : "💬 Message Seller";
+      const partyLabel = userSells ? "Interested buyer" : "Seller information";
+      container.innerHTML = `
+        <div class="detail-wrap">
+          <div class="detail-photo" style="background:${listing.color}">${listing.emoji}</div>
+          <div>
+            <div class="detail-info-card">
+              <h1 class="price">$${listing.price.toLocaleString()}</h1>
+              <h2 class="title">${listing.title}</h2>
+              <div class="meta">${listing.condition} · Listed ${listing.postedAgo} in ${listing.location}</div>
+
+              ${userSells ? '<div class="you-are-selling">You are selling this item</div>' : ""}
+              <button id="chat-btn" class="btn btn-primary">${ctaLabel}</button>
+
+              <hr class="divider" />
+
+              <div class="section-title">${partyLabel}</div>
+              <div class="seller-card">
+                <div class="seller-avatar">${other.avatarEmoji}</div>
+                <div>
+                  <div class="seller-name">${other.name}</div>
+                  <div class="seller-stat">⭐ ${other.rating} (${other.ratingCount} ratings)</div>
+                  <div class="seller-stat">Joined Marketplace ${other.joined}</div>
+                </div>
+              </div>
+              <div style="margin-top:10px" class="seller-stat">Usually responds ${other.responseTime} · ${other.responseRate} response rate</div>
+              <div class="seller-stat">📍 ${other.location}</div>
+            </div>
+
+            <div class="description-card">
+              <div class="section-title" style="margin-top:0">Description</div>
+              <div class="description-text">${listing.description}</div>
+            </div>
+
+            <div class="details-card">
+              <div class="section-title" style="margin-top:0">Details</div>
+              <div class="detail-row"><span>Category</span><span>${listing.category}</span></div>
+              <div class="detail-row"><span>Condition</span><span>${listing.condition}</span></div>
+              <div class="detail-row"><span>Location</span><span>${listing.location} (${listing.distance})</span></div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("chat-btn").addEventListener("click", () => openChat(listing));
+    }
+
+    async function loadListing() {
+      const id = getListingId();
+      const container = document.getElementById("detail-container");
+      if (!id) {
+        container.innerHTML = `<div class="error-msg">No listing specified.</div>`;
+        return;
+      }
+      try {
+        const res = await fetch(`/api/listings/${id}`);
+        if (!res.ok) throw new Error("Not found");
+        const listing = await res.json();
+        currentListing = listing;
+        renderListing(listing);
+        document.title = `${listing.title} | Marketplace (Mock)`;
+      } catch (err) {
+        container.innerHTML = `<div class="error-msg">Listing not found.</div>`;
+      }
+    }
+
+    loadListing();
+  </script>
+</body>
+</html>
