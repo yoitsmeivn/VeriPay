@@ -1,6 +1,11 @@
 @import 'tailwindcss';
 @import '@heroui/styles';
 
+/*
+ * VeriPay design system (HeroUI Pro ID: 3e02c8c3-8b2e-469a-bc28-c7645cfe6c86)
+ * Tokens adapted from the exported glass-light theme.
+ * Typography override: DM Sans (body) + Playfair Display (headings).
+ */
 @theme {
   --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Playfair Display', Georgia, serif;
@@ -9,30 +14,41 @@
   --color-background-secondary: #eaebed;
   --color-surface: #ffffff;
   --color-foreground: #18181b;
-  --color-muted: #6f7370;
+  --color-muted: #6f7371;
   --color-border: #dcdedd;
   --color-separator: rgba(0, 0, 0, 0.1);
-  --color-accent: #0d6b3f;
+  --color-accent: #0a3822;
   --color-accent-foreground: #fcfcfc;
-  --color-accent-soft: rgba(13, 107, 63, 0.12);
-  --color-success: #5fc43e;
-  --color-success-soft: rgba(95, 196, 62, 0.15);
-  --color-warning: #ff9d3b;
-  --color-warning-soft: rgba(255, 157, 59, 0.15);
+  --color-accent-soft: rgba(10, 56, 34, 0.15);
+  --color-success: #5ec43f;
+  --color-success-soft: rgba(94, 196, 63, 0.15);
+  --color-warning: #ff9d3a;
+  --color-warning-soft: rgba(255, 157, 58, 0.15);
   --color-danger: #fe3263;
   --color-danger-soft: rgba(254, 50, 99, 0.15);
 }
 
-/* Retheme HeroUI's accent tokens to the VeriPay green */
 :root,
 [data-theme='light'] {
-  --accent: #0d6b3f;
+  --spacing: 0.265625rem;
+  --background: #f4f5f7;
+  --foreground: #18181b;
+  --muted: oklch(55.17% 0.006 157.83);
+  --scrollbar: oklch(87.1% 0.003 157.83);
+  --surface: #ffffff;
+  --accent: #0a3822;
   --accent-foreground: #fcfcfc;
-  --accent-hover: #307950;
-  --accent-soft: rgba(13, 107, 63, 0.14);
-  --accent-soft-foreground: #1b5134;
-  --accent-soft-hover: rgba(13, 107, 63, 0.2);
-  --focus: #0d6b3f;
+  --accent-hover: #244935;
+  --accent-soft: rgba(10, 56, 34, 0.15);
+  --accent-soft-foreground: #132e20;
+  --accent-soft-hover: rgba(10, 56, 34, 0.2);
+  --success: oklch(73.29% 0.1947 139.29);
+  --warning: oklch(78.19% 0.1595 60.81);
+  --danger: oklch(65.32% 0.2342 14.22);
+  --border: oklch(90% 0.003 157.83);
+  --separator: rgba(0, 0, 0, 0.1);
+  --focus: #0a3822;
+  --glass-blur: 20px;
 }
 
 html {
@@ -43,32 +59,36 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--color-background);
-  color: var(--color-foreground);
+  background: var(--background);
+  color: var(--foreground);
   font-family: var(--font-sans);
   line-height: 1.5;
+}
+
+:is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-display);
 }
 
 /* VeriPay atmospheric surfaces */
 .hero-gradient {
   background:
     radial-gradient(115% 75% at 50% 0%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 58%),
-    linear-gradient(180deg, #082d1b 0%, #0e5332 55%, #1a7a4a 100%);
+    linear-gradient(180deg, #061f13 0%, #0a3822 55%, #1d4831 100%);
 }
 
 .footer-gradient {
-  background: linear-gradient(180deg, #0e5332 0%, #082d1b 100%);
+  background: linear-gradient(180deg, #0a3822 0%, #061f13 100%);
 }
 
 .glass {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .card-shadow {
   box-shadow:
-    0 16px 40px -6px rgba(10, 40, 24, 0.12),
+    0 16px 40px -6px rgba(10, 56, 34, 0.12),
     0 1px 0 0 rgba(0, 0, 0, 0.02);
 }

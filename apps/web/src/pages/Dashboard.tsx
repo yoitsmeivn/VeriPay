@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@heroui/react';
 import { Icon } from '@iconify/react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Sidebar } from '../components/Sidebar.js';
@@ -123,23 +124,32 @@ function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
         </Chip>
       </div>
 
-      {deal.cta ? (
-        <Button
-          variant={deal.cta.primary ? 'primary' : 'outline'}
-          className="w-full"
-          onPress={() => navigate('/deal')}
-        >
-          {deal.cta.label}
+      <div className="flex items-center gap-2">
+        {deal.cta ? (
+          <Button
+            variant={deal.cta.primary ? 'primary' : 'outline'}
+            className="flex-1"
+            onPress={() => navigate('/deal')}
+          >
+            {deal.cta.label}
+          </Button>
+        ) : (
+          <span className="flex-1 text-[14px] font-medium text-muted">{deal.note}</span>
+        )}
+        <Button variant="ghost" onPress={() => navigate('/deal')}>
+          View deal
+          <Icon icon="solar:arrow-right-linear" width={16} />
         </Button>
-      ) : (
-        <span className="text-[14px] font-medium text-muted">{deal.note}</span>
-      )}
+      </div>
     </Card>
   );
 }
 
 export function Dashboard(): React.JSX.Element {
   const navigate = useNavigate();
+  const [tab, setTab] = useState('All');
+  const visibleDeals = tab === 'All' ? DEALS : DEALS.filter((deal) => deal.status === tab);
+
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
@@ -160,7 +170,12 @@ export function Dashboard(): React.JSX.Element {
 
         <ToggleButtonGroup
           selectionMode="single"
-          defaultSelectedKeys={['All']}
+          disallowEmptySelection
+          selectedKeys={[tab]}
+          onSelectionChange={(keys) => {
+            const next = [...keys][0];
+            if (next != null) setTab(String(next));
+          }}
           className="mt-7 w-fit"
           aria-label="Filter deals by status"
         >
@@ -175,7 +190,7 @@ export function Dashboard(): React.JSX.Element {
         </ToggleButtonGroup>
 
         <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
-          {DEALS.map((deal) => (
+          {visibleDeals.map((deal) => (
             <DealCard key={deal.id} deal={deal} />
           ))}
         </div>
