@@ -27,7 +27,7 @@ export function AuthControls(): React.JSX.Element {
     return (
       <div className="auth">
         <p className="app__hint">Sign in to create and manage deals.</p>
-        <button type="button" className="button" onClick={() => void loginWithRedirect()}>
+        <button type="button" className="auth-button" onClick={() => void loginWithRedirect()}>
           Log in
         </button>
       </div>
@@ -56,7 +56,7 @@ export function AuthControls(): React.JSX.Element {
       </dl>
       <button
         type="button"
-        className="button button--secondary"
+        className="auth-button auth-button--secondary"
         onClick={() => void logout({ logoutParams: { returnTo: window.location.origin } })}
       >
         Log out

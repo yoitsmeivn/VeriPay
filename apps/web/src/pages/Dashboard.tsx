@@ -164,7 +164,6 @@ function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
         {deal.cta ? (
           <Button
             variant={deal.cta.primary ? 'primary' : 'outline'}
-            className="flex-1"
             onPress={handleCtaPress}
           >
             {deal.cta.label === 'Copy one-time link' ? (
@@ -173,9 +172,9 @@ function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
             {deal.cta.label}
           </Button>
         ) : (
-          <span className="flex-1 text-[14px] font-medium text-muted">{deal.note}</span>
+          <span className="text-[14px] font-medium text-muted">{deal.note}</span>
         )}
-        <Button variant="ghost" onPress={() => navigate(dealHref)}>
+        <Button variant="ghost" className="ml-auto shrink-0" onPress={() => navigate(dealHref)}>
           View deal
           <Icon icon="solar:arrow-right-linear" width={16} />
         </Button>

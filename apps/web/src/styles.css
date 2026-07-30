@@ -68,6 +68,8 @@
   --surface-tertiary: oklch(100% 0 0 / 0.28);
   --overlay: oklch(100% 0 0 / 0.68);
   --default: oklch(0 0 0 / 0.06);
+  --default-hover: oklch(0 0 0 / 0.1);
+  --default-foreground: var(--foreground);
   --field-background: oklch(100% 0 0 / 0.42);
   --field-border: oklch(100% 0 0 / 0.35);
   --field-focus: oklch(100% 0 0 / 0.58);
@@ -195,7 +197,8 @@ body::before {
   gap: 1rem;
 }
 
-.button {
+/* Plain auth controls only — do not use `.button`; HeroUI Button owns that class. */
+.auth-button {
   font: inherit;
   font-weight: 600;
   padding: 0.5rem 1rem;
@@ -206,17 +209,17 @@ body::before {
   cursor: pointer;
 }
 
-.button:hover {
+.auth-button:hover {
   filter: brightness(1.08);
 }
 
-.button:focus-visible {
+.auth-button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-.button--secondary {
+.auth-button--secondary {
   background: transparent;
   border-color: var(--border);
-  color: var(--text);
+  color: var(--foreground);
 }
