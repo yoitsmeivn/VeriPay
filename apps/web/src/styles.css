@@ -3,7 +3,7 @@
 
 /*
  * VeriPay design system (HeroUI Pro ID: 3e02c8c3-8b2e-469a-bc28-c7645cfe6c86)
- * Tokens adapted from the exported glass-light theme.
+ * Glass-light theme — pushed for stronger frosted-glass depth.
  * Typography override: DM Sans (body) + Playfair Display (headings).
  */
 @theme {
@@ -12,10 +12,10 @@
 
   --color-background: #f4f5f7;
   --color-background-secondary: #eaebed;
-  --color-surface: #ffffff;
+  --color-surface: oklch(100% 0 0 / 0.52);
   --color-foreground: #18181b;
   --color-muted: #6f7371;
-  --color-border: #dcdedd;
+  --color-border: oklch(100% 0 0 / 0.42);
   --color-separator: rgba(0, 0, 0, 0.1);
   --color-accent: #0a3822;
   --color-accent-foreground: #fcfcfc;
@@ -29,13 +29,13 @@
 }
 
 :root,
-[data-theme='light'] {
+[data-theme='light'],
+[data-theme='glass-light'] {
   --spacing: 0.265625rem;
   --background: #f4f5f7;
   --foreground: #18181b;
   --muted: oklch(55.17% 0.006 157.83);
   --scrollbar: oklch(87.1% 0.003 157.83);
-  --surface: #ffffff;
   --accent: #0a3822;
   --accent-foreground: #fcfcfc;
   --accent-hover: #244935;
@@ -45,10 +45,37 @@
   --success: oklch(73.29% 0.1947 139.29);
   --warning: oklch(78.19% 0.1595 60.81);
   --danger: oklch(65.32% 0.2342 14.22);
-  --border: oklch(90% 0.003 157.83);
+  --border: oklch(100% 0 0 / 0.42);
   --separator: rgba(0, 0, 0, 0.1);
   --focus: #0a3822;
-  --glass-blur: 20px;
+  --backdrop: oklch(77.21% 0.0036 247.87 / 0.72);
+
+  /* Glass — extreme frosted treatment */
+  --glass-blur: 48px;
+  --glass-saturate: 200%;
+  --glass-border: oklch(100% 0 0 / 0.55);
+  --glass-border-subtle: oklch(100% 0 0 / 0.28);
+  --glass-shadow:
+    0 8px 40px -8px rgba(10, 56, 34, 0.14),
+    0 2px 12px -2px rgba(48, 64, 200, 0.08),
+    inset 0 1px 0 oklch(100% 0 0 / 0.72),
+    inset 0 -1px 0 oklch(100% 0 0 / 0.08);
+
+  /* Semi-transparent surfaces so blur reads through */
+  --surface: oklch(100% 0 0 / 0.52);
+  --surface-secondary: oklch(100% 0 0 / 0.38);
+  --surface-tertiary: oklch(100% 0 0 / 0.28);
+  --overlay: oklch(100% 0 0 / 0.68);
+  --default: oklch(0 0 0 / 0.06);
+  --field-background: oklch(100% 0 0 / 0.42);
+  --field-border: oklch(100% 0 0 / 0.35);
+  --field-focus: oklch(100% 0 0 / 0.58);
+  --surface-shadow: 0 0 0 0 transparent;
+  --background-gradient: linear-gradient(
+    rgba(48, 64, 200, 0.22) 0%,
+    rgba(64, 140, 240, 0.12) 45%,
+    rgba(124, 210, 228, 0) 100%
+  );
 }
 
 html {
@@ -63,6 +90,24 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   line-height: 1.5;
+  isolation: isolate;
+}
+
+/* Fixed ambient canvas — gives glass panels something vivid to blur */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--background);
+  background-image:
+    var(--background-gradient),
+    radial-gradient(ellipse 90% 70% at 8% 12%, rgba(10, 56, 34, 0.28) 0%, transparent 58%),
+    radial-gradient(ellipse 75% 55% at 92% 8%, rgba(64, 140, 240, 0.24) 0%, transparent 52%),
+    radial-gradient(ellipse 65% 60% at 78% 88%, rgba(94, 196, 63, 0.2) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 45% at 22% 78%, rgba(10, 56, 34, 0.16) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 35% at 50% 40%, rgba(140, 180, 209, 0.14) 0%, transparent 60%);
 }
 
 :is(h1, h2, h3, h4, h5, h6) {
@@ -72,7 +117,7 @@ body {
 /* VeriPay atmospheric surfaces */
 .hero-gradient {
   background:
-    radial-gradient(115% 75% at 50% 0%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 58%),
+    radial-gradient(115% 75% at 50% 0%, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 58%),
     linear-gradient(180deg, #061f13 0%, #0a3822 55%, #1d4831 100%);
 }
 
@@ -81,14 +126,49 @@ body {
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  background: oklch(100% 0 0 / 0.18);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  box-shadow: var(--glass-shadow);
 }
 
 .card-shadow {
-  box-shadow:
-    0 16px 40px -6px rgba(10, 56, 34, 0.12),
-    0 1px 0 0 rgba(0, 0, 0, 0.02);
+  box-shadow: var(--glass-shadow);
+}
+
+/* HeroUI glass component overrides */
+@layer components {
+  .card--default,
+  .card--secondary,
+  .card--tertiary,
+  .surface--default,
+  .surface--secondary {
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .input,
+  .textarea,
+  .select__trigger,
+  .toggle-button:not([data-selected='true']) {
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.65)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.65)) saturate(var(--glass-saturate));
+    border-color: var(--glass-border-subtle);
+  }
+
+  .toggle-button-group,
+  .segment {
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.5)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.5)) saturate(var(--glass-saturate));
+    border: 1px solid var(--glass-border-subtle);
+    box-shadow: inset 0 1px 0 oklch(100% 0 0 / 0.45);
+  }
+
+  .chip.chip--soft {
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.4)) saturate(160%);
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.4)) saturate(160%);
+  }
 }

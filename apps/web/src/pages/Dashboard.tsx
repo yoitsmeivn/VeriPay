@@ -4,6 +4,7 @@ import {
   Card,
   Chip,
   Separator,
+  toast,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
@@ -13,6 +14,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Sidebar } from '../components/Sidebar.js';
+import { copyDealLink } from '../lib/copy-deal-link.js';
 
 type ChipColor = 'default' | 'accent' | 'success' | 'warning';
 
@@ -21,7 +23,7 @@ type Deal = {
   status: string;
   statusColor: ChipColor;
   title: string;
-  role: string;
+  side: 'Buyer' | 'Seller';
   amount: string;
   counterparty: string;
   fraud: string;
@@ -36,7 +38,7 @@ const DEALS: Deal[] = [
     status: 'New',
     statusColor: 'default',
     title: 'PS5 Console (used)',
-    role: "You're buying",
+    side: 'Buyer',
     amount: '$420.00',
     counterparty: 'No counterparty yet',
     fraud: 'Awaiting',
@@ -48,7 +50,7 @@ const DEALS: Deal[] = [
     status: 'Connected',
     statusColor: 'accent',
     title: 'iPhone 15 Pro',
-    role: "You're buying",
+    side: 'Buyer',
     amount: '$780.00',
     counterparty: 'alex.tran@email.com',
     fraud: 'Medium risk',
@@ -60,7 +62,7 @@ const DEALS: Deal[] = [
     status: 'Held',
     statusColor: 'accent',
     title: '2× Coachella GA Wristbands',
-    role: "You're selling",
+    side: 'Seller',
     amount: '$740.00',
     counterparty: 'jordan.m@email.com',
     fraud: 'Trusted',
@@ -72,7 +74,7 @@ const DEALS: Deal[] = [
     status: 'Completed',
     statusColor: 'success',
     title: 'Herman Miller Aeron',
-    role: "You're selling",
+    side: 'Seller',
     amount: '$610.00',
     counterparty: 'sam.lee@email.com',
     fraud: 'Trusted',
@@ -91,20 +93,49 @@ const TABS = [
 
 function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
   const navigate = useNavigate();
+
+  async function handleCopyLink(): Promise<void> {
+    const copied = await copyDealLink();
+    if (copied) {
+      toast.success('One-time link copied', {
+        description: `${deal.id} · share it once before it expires.`,
+      });
+      return;
+    }
+
+    toast.danger('Could not copy link', {
+      description: 'Try again or open the deal to copy manually.',
+    });
+  }
+
+  function handleCtaPress(): void {
+    if (deal.cta?.label === 'Copy one-time link') {
+      void handleCopyLink();
+      return;
+    }
+    navigate('/deal');
+  }
+
   return (
     <Card className="flex flex-col gap-[15px] p-[22px]">
       <div className="flex items-center justify-between">
-        <Chip color={deal.statusColor} variant="soft" size="sm">
-          {deal.status}
-        </Chip>
+        <div className="flex items-center gap-2">
+          <Chip color={deal.statusColor} variant="soft" size="sm">
+            {deal.status}
+          </Chip>
+          <Chip variant="tertiary" size="sm">
+            <Icon
+              icon={deal.side === 'Buyer' ? 'solar:cart-large-2-linear' : 'solar:tag-linear'}
+              width={13}
+            />
+            {deal.side}
+          </Chip>
+        </div>
         <span className="text-[13px] font-medium text-muted">{deal.id}</span>
       </div>
 
       <div className="flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="truncate text-[17px] font-semibold tracking-[-0.01em]">{deal.title}</p>
-          <p className="text-[13px] font-medium text-muted">{deal.role}</p>
-        </div>
+        <p className="min-w-0 truncate text-[17px] font-semibold tracking-[-0.01em]">{deal.title}</p>
         <span className="shrink-0 text-[22px] font-semibold tracking-[-0.02em]">{deal.amount}</span>
       </div>
 
@@ -129,8 +160,11 @@ function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
           <Button
             variant={deal.cta.primary ? 'primary' : 'outline'}
             className="flex-1"
-            onPress={() => navigate('/deal')}
+            onPress={handleCtaPress}
           >
+            {deal.cta.label === 'Copy one-time link' ? (
+              <Icon icon="solar:copy-linear" width={16} />
+            ) : null}
             {deal.cta.label}
           </Button>
         ) : (

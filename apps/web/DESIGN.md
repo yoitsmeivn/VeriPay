@@ -20,7 +20,7 @@ The exported design system specifies Inter; this project deliberately keeps the 
 | `background` | `#F4F5F7` | Page canvas |
 | `foreground` | `#18181B` | Primary text |
 | `muted` | `#6F7371` | Secondary text |
-| `surface` | `#FFFFFF` | Cards, panels |
+| `surface` | `oklch(100% 0 0 / 0.52)` | Frosted cards, panels |
 | `accent` | `#0A3822` | Primary actions, focus |
 | `accent-hover` | `#244935` | Accent hover |
 | `accent-soft` | `rgba(10, 56, 34, 0.15)` | Soft emphasis |
@@ -34,7 +34,8 @@ The exported design system specifies Inter; this project deliberately keeps the 
 | `spacing` | `4.25px` | Base spacing unit |
 | `radius` | `8px` | Global corner radius |
 | `field-radius` | `12px` | Form controls |
-| `glass-blur` | `20px` | Glass surfaces |
+| `glass-blur` | `48px` | Frosted glass blur (+ 200% saturation) |
+| `glass-border` | `oklch(100% 0 0 / 0.55)` | Luminous glass edge |
 
 ## Components
 

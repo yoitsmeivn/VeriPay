@@ -1,4 +1,4 @@
-import { Avatar, Card, Chip, Label, Meter, Separator } from '@heroui/react';
+import { Avatar, Card, Chip, Separator } from '@heroui/react';
 import { Icon } from '@iconify/react';
 
 const REASONS = [
@@ -43,17 +43,34 @@ export function TrustPanel({ name, email, score, riskLabel, badge }: Props): Rea
         </Chip>
       </div>
 
-      <Meter value={score} aria-label="Trust score" className="w-full">
+      <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <Label className="text-[14px] font-medium text-foreground">Trust score</Label>
+          <span className="text-[14px] font-medium text-foreground">Trust score</span>
           <span className="text-[13px] font-medium text-muted">
-            <span className="text-[16px] font-semibold text-[#417435]">{score}</span> / 100 · {riskLabel}
+            <span className="text-[16px] font-semibold text-foreground">{score}</span> / 100 · {riskLabel}
           </span>
         </div>
-        <Meter.Track>
-          <Meter.Fill />
-        </Meter.Track>
-      </Meter>
+        <div
+          role="meter"
+          aria-valuenow={score}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Trust score"
+          className="relative h-2 w-full rounded-full"
+          style={{ background: 'linear-gradient(90deg, #fe3263 0%, #ff9d3a 50%, #5ec43f 100%)' }}
+        >
+          {/* mute the portion beyond the score */}
+          <div
+            className="absolute inset-y-0 right-0 rounded-r-full bg-black/[0.09]"
+            style={{ width: `${100 - score}%` }}
+          />
+          {/* marker at the score */}
+          <div
+            className="absolute top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-foreground shadow-sm"
+            style={{ left: `${score}%` }}
+          />
+        </div>
+      </div>
 
       <Separator />
 

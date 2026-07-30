@@ -1,8 +1,23 @@
-import { Button, Card, Input, Typography } from '@heroui/react';
+import { Button, Card, Input, toast, Typography } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 
 import { MinimalHeader } from '../components/MinimalHeader.js';
+import { copyDealLink, SAMPLE_DEAL_LINK_DISPLAY } from '../lib/copy-deal-link.js';
+
+async function handleCopyLink(): Promise<void> {
+  const copied = await copyDealLink();
+  if (copied) {
+    toast.success('Link copied', {
+      description: 'Share it once — it opens a single time.',
+    });
+    return;
+  }
+
+  toast.danger('Could not copy link', {
+    description: 'Try selecting the link and copying manually.',
+  });
+}
 
 export function DealCreated(): React.JSX.Element {
   const navigate = useNavigate();
@@ -27,14 +42,14 @@ export function DealCreated(): React.JSX.Element {
 
           <div className="flex w-full items-center gap-2">
             <Input
-              isReadOnly
-              value="veripay.co/d/a7f3-9x2k-onetime"
+              readOnly
+              value={SAMPLE_DEAL_LINK_DISPLAY}
               aria-label="One-time deal link"
               className="flex-1"
             />
-            <Button>
+            <Button variant="outline" onPress={() => void handleCopyLink()}>
               <Icon icon="solar:copy-linear" width={16} />
-              Copy
+              Copy link
             </Button>
           </div>
 
