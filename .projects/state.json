@@ -1,11 +1,19 @@
 {
   "version": 1,
   "providers": {
+    "auth0": {
+      "name": "Auth0"
+    },
     "supabase": {
       "name": "Supabase"
     }
   },
   "resources": {
+    "auth0-plan": {
+      "name": "auth0-plan",
+      "providerName": "Auth0",
+      "serviceId": "free"
+    },
     "supabase-plan": {
       "name": "supabase-plan",
       "providerName": "Supabase",
@@ -15,6 +23,11 @@
       "name": "veripay",
       "providerName": "Supabase",
       "serviceId": "project"
+    },
+    "veripay-spa": {
+      "name": "veripay-spa",
+      "providerName": "Auth0",
+      "serviceId": "client"
     }
   }
 }

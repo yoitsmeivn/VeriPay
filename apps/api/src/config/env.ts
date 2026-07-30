@@ -78,10 +78,19 @@ const envSchema = z.object({
   // TODO(persistence): required by drizzle-kit migrations only, never at runtime.
   SUPABASE_DB_URL: z.string().min(1).optional(),
 
-  // TODO(auth): required once Auth0 JWT verification middleware lands.
+  // Auth0. Optional here so tooling and tests can build an env without them;
+  // `parseAuthConfig` in src/auth/jwt.ts hard-requires the two the verifier
+  // needs, and server.ts refuses to start if they are missing.
+  //
+  // AUTH0_DOMAIN and AUTH0_CLIENT_ID come from Stripe Projects. AUTH0_AUDIENCE
+  // does not — it is the API identifier you create by hand in the Auth0
+  // dashboard (see docs/auth0.md).
   AUTH0_DOMAIN: z.string().min(1).optional(),
   AUTH0_AUDIENCE: z.string().min(1).optional(),
   AUTH0_CLIENT_ID: z.string().min(1).optional(),
+  // Declared so a value in .env validates, but deliberately unused: the SPA
+  // access-token flow is public-key only (RS256 + JWKS). Nothing in this API
+  // reads it, and it must never reach the browser bundle.
   AUTH0_CLIENT_SECRET: z.string().min(1).optional(),
 
   // TODO(payments): required once Checkout and Connect endpoints land.

@@ -106,6 +106,14 @@ export default defineConfig(
     },
   },
   {
+    name: 'veripay/web-tests-node-access',
+    // Web *tests* run in Node, and one of them scans the source tree and the
+    // built bundle for leaked secrets — which needs `node:fs`. The boundary
+    // rule still applies in full to apps/web application source.
+    files: ['apps/web/**/*.test.ts', 'apps/web/**/*.test.tsx'],
+    rules: { 'no-restricted-imports': 'off' },
+  },
+  {
     name: 'veripay/entrypoints',
     // `server.ts` reports fatal startup failures before a logger can exist, and
     // drizzle.config.ts runs under the drizzle-kit CLI with no logger at all.

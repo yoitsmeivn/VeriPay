@@ -99,6 +99,24 @@ action. Never treat an Auth0 claim, role or scope as an application
 permission, and never authorize an action on the strength of a valid token
 alone.
 
+Auth0 is for **registered VeriPay accounts only**. Guest link recipients never
+sign in to Auth0, never create an account, and never appear in the tenant — a
+guest is authorized by their signed link alone. Guest handling is not built
+yet; when it is, it must not route through Auth0.
+
+Implementation: `apps/api/src/auth/jwt.ts` verifies RS256 tokens against the
+tenant JWKS, checking signature, issuer, audience, expiry and algorithm.
+`requireAuth` protects a route; `requirePrincipal(req)` reads the principal and
+throws if the route was not actually protected. `GET /api/health` is public,
+`GET /api/me` is protected. Full details in [docs/auth0.md](./docs/auth0.md).
+
+**`AUTH0_CLIENT_SECRET` is unused and must stay that way.** The SPA flow is
+public-key only. It must never be mirrored into a `VITE_` variable — Vite
+inlines those into the browser bundle as plain text.
+`apps/web/src/no-secret-leak.test.ts` enforces this, strictly enough to fail on
+the variable name appearing in a comment, so refer to it in prose inside
+`apps/web`.
+
 ### Stripe webhooks are authoritative for payment state
 
 A payment's state changes only when a **signature-verified Stripe webhook**

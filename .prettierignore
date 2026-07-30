@@ -11,6 +11,7 @@ coverage/
 # CLI regenerates them.
 .agents/skills/stripe-projects-cli/
 .agents/skills/sp-supabase/
+.agents/skills/sp-auth0/
 .claude/settings.json
 .cursor/
 

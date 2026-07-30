@@ -14,6 +14,11 @@ import { Invite } from './pages/Invite.js';
  * params: `status` (new | connected | held | completed) advances the timeline
  * and swaps the action card, and `as` (buyer | seller) flips the perspective
  * and the counterparty shown in the trust panel.
+ *
+ * Auth0 wraps this tree from `main.tsx`, so any page here may call `useAuth0()`
+ * and `useApiClient()`. No route is gated yet — the sign-in surfaces
+ * (`components/auth-controls.tsx`, `components/me-panel.tsx`) exist and compile
+ * but are not mounted; they get wired into these pages in a follow-up.
  */
 export function App(): React.JSX.Element {
   return (

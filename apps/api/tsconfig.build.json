@@ -10,5 +10,6 @@
     "declarationMap": false
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.test.ts"]
+  // Test-only code must never reach dist/.
+  "exclude": ["src/**/*.test.ts", "src/**/__fixtures__/**"]
 }

@@ -6,6 +6,7 @@
  */
 
 import { createApp } from './app.js';
+import { createAuthenticatorFromEnv } from './auth/jwt.js';
 import { EnvironmentError, loadEnv } from './config/env.js';
 import { createLogger } from './lib/logger.js';
 import { createShutdownCoordinator } from './lib/shutdown.js';
@@ -33,7 +34,19 @@ function main(): void {
   }
 
   const logger = createLogger(env);
-  const app = createApp({ env, logger, version: SERVICE_VERSION });
+
+  // Fails fast when AUTH0_DOMAIN / AUTH0_AUDIENCE are missing. Refusing to
+  // start beats starting with an API whose protected routes cannot work.
+  let authenticator;
+  try {
+    authenticator = createAuthenticatorFromEnv(env);
+  } catch (error) {
+    logger.fatal({ err: error }, 'cannot start without Auth0 configuration — see docs/auth0.md');
+    process.exitCode = 1;
+    return;
+  }
+
+  const app = createApp({ env, logger, authenticator, version: SERVICE_VERSION });
 
   const server = app.listen(env.API_PORT, () => {
     logger.info(
