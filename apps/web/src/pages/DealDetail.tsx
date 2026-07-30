@@ -41,7 +41,7 @@ const SELLER_STEPS = [
 ];
 
 const BUYER_STEPS = [
-  { title: 'You accepted the deal', sub: 'Jun 14 · you@email.com' },
+  { title: 'Seller accepted the deal', sub: 'Jun 14 · jordan.m@email.com' },
   { title: 'You funded the payment', sub: 'Jun 14 · $740.00 held by Stripe' },
   { title: 'Seller delivers the item', sub: 'You’ll be notified when it’s sent' },
   { title: 'Confirm you received it', sub: 'Releases the payment to the seller' },
@@ -175,11 +175,12 @@ export function DealDetail(): React.JSX.Element {
                     toast.success('Receipt confirmed', { description: 'Releasing the payment to the seller.' });
                     navigate(go('completed'));
                   }}
-                  onFund={() =>
+                  onFund={() => {
                     toast.success('Redirecting to secure payment', {
                       description: 'You’ll complete the payment with Stripe.',
-                    })
-                  }
+                    });
+                    navigate(go('held'));
+                  }}
                   onCopy={() => void handleCopy()}
                 />
               </>

@@ -1,6 +1,6 @@
 import { Button, Card, Chip, Input, Label, Separator, TextField, toast, Typography } from '@heroui/react';
 import { Icon } from '@iconify/react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { Logo } from '../components/Logo.js';
 import { TrustPanel } from '../components/TrustPanel.js';
@@ -24,10 +24,27 @@ function PublicHeader({ context }: { context: string }): React.JSX.Element {
 
 export function Invite(): React.JSX.Element {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  // `as` is the recipient's role: seller accepting a buyer's deal, or buyer accepting a seller's deal.
+  const asSeller = params.get('as') === 'seller';
+
+  // The counterparty is always the deal's creator.
+  const counterparty = asSeller
+    ? { name: 'Alex T.', email: 'alex.tran@email.com', score: 88, badge: 'Trusted buyer', who: 'buyer' }
+    : { name: 'Jordan M.', email: 'jordan.m@email.com', score: 92, badge: 'Trusted seller', who: 'seller' };
+
+  const headline = asSeller ? 'Alex T. wants to buy from you.' : 'Jordan M. wants to sell to you.';
+  const amountLabel = asSeller ? "Total you'll receive" : 'Total to pay';
+  const roleLabel = asSeller ? "You're the seller" : "You're the buyer";
+  const finePrint = asSeller
+    ? 'By accepting, Alex T. funds the payment and Stripe holds it until you deliver and they confirm receipt — or it auto-releases to you after 48 hours.'
+    : 'By accepting, $740.00 will be held by Stripe and released to Jordan M. only when you confirm receipt — or automatically after 48 hours.';
 
   function handleAccept(): void {
     toast.success('Deal accepted', {
-      description: 'Next, fund the payment securely with Stripe.',
+      description: asSeller
+        ? 'The buyer will be prompted to fund the payment.'
+        : 'Next, fund the payment securely with Stripe.',
     });
     navigate('/');
   }
@@ -41,10 +58,11 @@ export function Invite(): React.JSX.Element {
           You&rsquo;ve been invited to a deal
         </p>
         <Typography type="h3" className="text-center text-[38px] font-semibold tracking-[-0.02em]">
-          Jordan M. wants to sell to you.
+          {headline}
         </Typography>
         <p className="text-center text-[15px] text-muted">
-          Review the terms and the seller below, then accept with your email. No account needed.
+          Review the terms and the {counterparty.who} below, then accept with your email. No account
+          needed.
         </p>
 
         {/* deal summary */}
@@ -63,20 +81,20 @@ export function Invite(): React.JSX.Element {
           <Separator />
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[13px] font-medium text-muted">Total to pay</p>
-              <p className="text-[13px] font-medium text-muted">You&rsquo;re the buyer</p>
+              <p className="text-[13px] font-medium text-muted">{amountLabel}</p>
+              <p className="text-[13px] font-medium text-muted">{roleLabel}</p>
             </div>
             <span className="text-[30px] font-semibold tracking-[-0.02em]">$740.00</span>
           </div>
         </Card>
 
-        {/* seller trust */}
+        {/* counterparty trust */}
         <TrustPanel
-          name="Jordan M."
-          email="jordan.m@email.com"
-          score={92}
+          name={counterparty.name}
+          email={counterparty.email}
+          score={counterparty.score}
           riskLabel="Low risk"
-          badge="Trusted seller"
+          badge={counterparty.badge}
         />
 
         {/* accept */}
@@ -88,10 +106,7 @@ export function Invite(): React.JSX.Element {
           Accept deal
           <Icon icon="solar:arrow-right-linear" width={18} />
         </Button>
-        <p className="text-center text-[13px] text-muted">
-          By accepting, $740.00 will be held by Stripe and released to Jordan M. only when you confirm
-          receipt — or automatically after 48 hours.
-        </p>
+        <p className="text-center text-[13px] text-muted">{finePrint}</p>
       </div>
     </div>
   );
