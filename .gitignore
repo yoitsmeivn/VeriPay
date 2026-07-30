@@ -1,17 +1,14 @@
-.projects/cache
-.projects/vault
-.projects/state.test.json
-.projects/state.local.test.json
-.env
-.env.*
-!.env.example
 .projects/state.local.json
 
 # --- VeriPay ---------------------------------------------------------------
-# Everything above this line is managed by the Stripe Projects CLI. Leave it.
+# The Stripe Projects CLI rewrites its own rules on every `stripe projects add`
+# and may relocate them within this file (it moved them from the top to the
+# bottom when Auth0 was provisioned). Leave those lines alone wherever they
+# land; keep VeriPay's rules in this block.
 
-# Explicit form of the vault rule required by the VeriPay scaffold.
-.projects/vault/
+# Explicit trailing-slash form of the vault rule. Redundant with the CLI's
+# `.projects/vault`, kept so the credential vault stays ignored even if the CLI
+# block is ever regenerated without it.
 
 # Dependencies and build output
 node_modules/
@@ -31,3 +28,11 @@ coverage/
 # Logs
 *.log
 npm-debug.log*
+
+.projects/cache
+.projects/vault
+.projects/state.test.json
+.projects/state.local.test.json
+.env
+.env.*
+!.env.example

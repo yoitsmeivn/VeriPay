@@ -38,5 +38,8 @@
     "prettier": "^3.9.6",
     "typescript": "6.0.3",
     "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "@auth0/auth0-react": "^2.22.1"
   }
 }

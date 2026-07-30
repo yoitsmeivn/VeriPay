@@ -1,13 +1,32 @@
-import { ERROR_CODES, apiFailureSchema, healthResponseSchema } from '@veripay/shared';
+import {
+  ERROR_CODES,
+  apiFailureSchema,
+  healthResponseSchema,
+  meResponseSchema,
+} from '@veripay/shared';
 import { pino } from 'pino';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { createApp } from './app.js';
+import {
+  TEST_AUDIENCE,
+  TEST_ISSUER,
+  TEST_SUBJECT,
+  type TestKeyring,
+  createTestKeyring,
+} from './auth/__fixtures__/tokens.js';
+import { createAuthenticator } from './auth/jwt.js';
 import { type Env, loadEnv } from './config/env.js';
 
 const ALLOWED_ORIGIN = 'http://localhost:5173';
 const DISALLOWED_ORIGIN = 'http://evil.test';
+
+let keyring: TestKeyring;
+
+beforeAll(async () => {
+  keyring = await createTestKeyring();
+});
 
 function buildApp(overrides: Record<string, string | undefined> = {}) {
   const env: Env = loadEnv({
@@ -16,7 +35,18 @@ function buildApp(overrides: Record<string, string | undefined> = {}) {
     LOG_LEVEL: 'silent',
     ...overrides,
   });
-  return createApp({ env, logger: pino({ level: 'silent' }), version: '0.1.0-test' });
+  // Real verifier, local key set — no network, no Auth0.
+  const authenticator = createAuthenticator({
+    issuer: TEST_ISSUER,
+    audience: TEST_AUDIENCE,
+    keyResolver: keyring.keyResolver,
+  });
+  return createApp({
+    env,
+    logger: pino({ level: 'silent' }),
+    authenticator,
+    version: '0.1.0-test',
+  });
 }
 
 describe('GET /api/health', () => {
@@ -37,6 +67,85 @@ describe('GET /api/health', () => {
   it('does not leak the Express fingerprint', async () => {
     const response = await request(buildApp()).get('/api/health');
     expect(response.headers['x-powered-by']).toBeUndefined();
+  });
+
+  it('stays public — no Authorization header required', async () => {
+    // Uptime checks and the web app's status panel call this anonymously.
+    const response = await request(buildApp()).get('/api/health');
+    expect(response.status).toBe(200);
+  });
+
+  it('ignores a bearer token rather than rejecting it', async () => {
+    const response = await request(buildApp())
+      .get('/api/health')
+      .set('Authorization', 'Bearer completely-invalid');
+    expect(response.status).toBe(200);
+  });
+});
+
+describe('GET /api/me', () => {
+  it('requires authentication', async () => {
+    const response = await request(buildApp()).get('/api/me');
+
+    expect(response.status).toBe(401);
+    expect(apiFailureSchema.safeParse(response.body).success).toBe(true);
+    expect(response.body.error.code).toBe(ERROR_CODES.UNAUTHENTICATED);
+  });
+
+  it.each([
+    ['no scheme', 'abc.def.ghi'],
+    ['wrong scheme', 'Basic dXNlcjpwYXNz'],
+    ['scheme only', 'Bearer'],
+    ['garbage token', 'Bearer not-a-jwt'],
+    ['too many parts', 'Bearer abc.def.ghi extra'],
+  ])('rejects a malformed Authorization header (%s)', async (_label, header) => {
+    const response = await request(buildApp()).get('/api/me').set('Authorization', header);
+    expect(response.status).toBe(401);
+    expect(response.body.error.code).toBe(ERROR_CODES.UNAUTHENTICATED);
+  });
+
+  it('rejects an expired token', async () => {
+    const token = await keyring.sign({ expiresInSeconds: -60 });
+    const response = await request(buildApp())
+      .get('/api/me')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body.error.message).toMatch(/expired/i);
+  });
+
+  it('rejects a token for a different audience', async () => {
+    const token = await keyring.sign({ audience: 'https://api.someone-else' });
+    const response = await request(buildApp())
+      .get('/api/me')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(401);
+  });
+
+  it('returns the verified principal for a valid token', async () => {
+    const token = await keyring.sign({ scope: 'openid profile' });
+    const response = await request(buildApp())
+      .get('/api/me')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(meResponseSchema.safeParse(response.body).success).toBe(true);
+    expect(response.body.data.sub).toBe(TEST_SUBJECT);
+    expect(response.body.data.scope).toEqual(['openid', 'profile']);
+  });
+
+  it('carries the request id on the 401 and leaks neither the token nor internals', async () => {
+    const token = await keyring.sign({ expiresInSeconds: -60 });
+    const response = await request(buildApp())
+      .get('/api/me')
+      .set('x-request-id', 'trace-auth-001')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body.error.requestId).toBe('trace-auth-001');
+    const serialised = JSON.stringify(response.body);
+    expect(serialised).not.toContain(token);
+    expect(serialised).not.toMatch(/jose|JWKS|stack/i);
   });
 });
 

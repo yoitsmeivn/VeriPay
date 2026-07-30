@@ -50,6 +50,8 @@ docs/               Architecture, environment and tooling notes
 
 - [AGENTS.md](./AGENTS.md) — structure, boundaries and domain rules (start here)
 - [docs/architecture.md](./docs/architecture.md) — request lifecycle and layering
+- [docs/auth0.md](./docs/auth0.md) — login, JWT validation, and the manual dashboard setup
+- [docs/stripe-projects.md](./docs/stripe-projects.md) — what is provisioned and how
 - [docs/environment.md](./docs/environment.md) — every environment variable
 - [docs/tooling.md](./docs/tooling.md) — version choices, including the TypeScript pin
 
@@ -57,6 +59,9 @@ docs/               Architecture, environment and tooling notes
 
 - **Money is always integer minor units.** Never a float.
 - **Auth0 authenticates; VeriPay authorizes.** A valid token is not a permission.
+  Auth0 is for registered accounts only — guest link recipients never sign in.
+  Signing in locally needs a one-off manual Auth0 dashboard step; see
+  [docs/auth0.md](./docs/auth0.md).
 - **Only signature-verified Stripe webhooks change payment state.** Never a
   client redirect.
 - Supabase has two connections: `SUPABASE_POOLER_URL` (6543) for the API

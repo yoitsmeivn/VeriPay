@@ -1,6 +1,7 @@
 import express, { type Express } from 'express';
 import { pinoHttp } from 'pino-http';
 
+import { type Authenticator } from './auth/jwt.js';
 import { type Env, isProduction } from './config/env.js';
 import { type Logger } from './lib/logger.js';
 import { corsPolicy } from './middleware/cors.js';
@@ -21,6 +22,14 @@ export const JSON_BODY_LIMIT = '100kb';
 export interface AppDependencies {
   readonly env: Env;
   readonly logger: Logger;
+  /**
+   * Verifies Auth0 access tokens.
+   *
+   * Required, not optional: if this could be omitted, a wiring mistake would
+   * silently produce an app whose protected routes are open. `server.ts` builds
+   * the real one from the environment; tests inject a deterministic stub.
+   */
+  readonly authenticator: Authenticator;
   readonly version?: string;
 }
 
@@ -62,7 +71,7 @@ export function createApp(deps: AppDependencies): Express {
   app.use(corsPolicy(env));
   app.use(express.json({ limit: JSON_BODY_LIMIT }));
 
-  app.use('/api', apiRouter({ version }));
+  app.use('/api', apiRouter({ version, authenticator: deps.authenticator }));
 
   app.use(notFoundHandler());
   // Must be last: Express identifies the error handler by its arity.

@@ -56,3 +56,31 @@ export function apiSuccessSchema<T extends z.ZodType>(data: T) {
 export const healthResponseSchema = apiSuccessSchema(healthPayloadSchema);
 
 export type HealthResponse = z.infer<typeof healthResponseSchema>;
+
+// ---------------------------------------------------------------------------
+// Authentication
+//
+// The authenticated caller, derived purely from a verified Auth0 access token.
+// `sub` is the stable Auth0 user identifier and the only claim guaranteed to be
+// present; it is what VeriPay will key its own user records on.
+//
+// This describes an *authenticated* principal, not an authorized one. Auth0
+// says who the caller is; what they may do is VeriPay's decision, made against
+// VeriPay's own data. Do not add roles or permissions here.
+// ---------------------------------------------------------------------------
+
+export const authPrincipalSchema = z.object({
+  sub: z.string().min(1),
+  email: z.email().optional(),
+  emailVerified: z.boolean().optional(),
+  name: z.string().min(1).optional(),
+  picture: z.url().optional(),
+  /** Parsed from the space-delimited `scope` claim. Empty when absent. */
+  scope: z.array(z.string()).default([]),
+});
+
+export type AuthPrincipal = z.infer<typeof authPrincipalSchema>;
+
+export const meResponseSchema = apiSuccessSchema(authPrincipalSchema);
+
+export type MeResponse = z.infer<typeof meResponseSchema>;
