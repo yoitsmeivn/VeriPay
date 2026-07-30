@@ -86,13 +86,20 @@ const DEALS: Deal[] = [
 const TABS = [
   { label: 'All', count: 15 },
   { label: 'New', count: 2 },
-  { label: 'Connected', count: 3 },
-  { label: 'Held', count: 2 },
+  { label: 'In-progress', count: 5 },
   { label: 'Completed', count: 8 },
 ];
 
+/** Connected and Held both surface as a single "In-progress" group. */
+function toGroup(status: string): { label: 'New' | 'In-progress' | 'Completed'; color: ChipColor } {
+  if (status === 'New') return { label: 'New', color: 'default' };
+  if (status === 'Completed') return { label: 'Completed', color: 'success' };
+  return { label: 'In-progress', color: 'accent' };
+}
+
 function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
   const navigate = useNavigate();
+  const dealHref = `/deal?as=${deal.side.toLowerCase()}&status=${deal.status.toLowerCase()}`;
 
   async function handleCopyLink(): Promise<void> {
     const copied = await copyDealLink();
@@ -113,15 +120,15 @@ function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
       void handleCopyLink();
       return;
     }
-    navigate('/deal');
+    navigate(dealHref);
   }
 
   return (
     <Card className="flex flex-col gap-[15px] p-[22px]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Chip color={deal.statusColor} variant="soft" size="sm">
-            {deal.status}
+          <Chip color={toGroup(deal.status).color} variant="soft" size="sm">
+            {toGroup(deal.status).label}
           </Chip>
           <Chip variant="tertiary" size="sm">
             <Icon
@@ -170,7 +177,7 @@ function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
         ) : (
           <span className="flex-1 text-[14px] font-medium text-muted">{deal.note}</span>
         )}
-        <Button variant="ghost" onPress={() => navigate('/deal')}>
+        <Button variant="ghost" onPress={() => navigate(dealHref)}>
           View deal
           <Icon icon="solar:arrow-right-linear" width={16} />
         </Button>
@@ -194,7 +201,6 @@ export function Dashboard(): React.JSX.Element {
             <Typography type="h3" className="text-[28px] font-semibold tracking-[-0.03em]">
               Your deals
             </Typography>
-            <p className="mt-1 text-[15px] text-muted">3 active · 1 needs your action</p>
           </div>
           <Button onPress={() => navigate('/create')}>
             <Icon icon="solar:add-circle-linear" width={18} />
