@@ -84,3 +84,45 @@ export type AuthPrincipal = z.infer<typeof authPrincipalSchema>;
 export const meResponseSchema = apiSuccessSchema(authPrincipalSchema);
 
 export type MeResponse = z.infer<typeof meResponseSchema>;
+
+// ---------------------------------------------------------------------------
+// Payments — Stripe Checkout for funding a deal (separate charges and transfers)
+// ---------------------------------------------------------------------------
+
+export const fundDealRequestSchema = z.object({
+  /** Short deal ref, e.g. "A7F3" from "Deal #A7F3". */
+  dealRef: z
+    .string()
+    .trim()
+    .min(1)
+    .transform((value) => value.toUpperCase()),
+});
+
+export type FundDealRequest = z.infer<typeof fundDealRequestSchema>;
+
+export const fundDealPayloadSchema = z.object({
+  checkoutUrl: z.url(),
+  sessionId: z.string().min(1),
+  dealRef: z.string().min(1),
+});
+
+export type FundDealPayload = z.infer<typeof fundDealPayloadSchema>;
+
+export const fundDealResponseSchema = apiSuccessSchema(fundDealPayloadSchema);
+
+export type FundDealResponse = z.infer<typeof fundDealResponseSchema>;
+
+// ---------------------------------------------------------------------------
+// Connect — seller onboarding (Express dashboard, recipient configuration)
+// ---------------------------------------------------------------------------
+
+export const connectOnboardingPayloadSchema = z.object({
+  onboardingUrl: z.url(),
+  accountId: z.string().min(1),
+});
+
+export type ConnectOnboardingPayload = z.infer<typeof connectOnboardingPayloadSchema>;
+
+export const connectOnboardingResponseSchema = apiSuccessSchema(connectOnboardingPayloadSchema);
+
+export type ConnectOnboardingResponse = z.infer<typeof connectOnboardingResponseSchema>;

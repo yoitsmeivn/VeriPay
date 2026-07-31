@@ -1,5 +1,7 @@
 import {
   type AuthPrincipal,
+  type ConnectOnboardingPayload,
+  type FundDealPayload,
   type HealthPayload,
   AppError,
   InternalError,
@@ -7,6 +9,8 @@ import {
   UpstreamUnavailableError,
   ValidationError,
   apiFailureSchema,
+  connectOnboardingResponseSchema,
+  fundDealResponseSchema,
   healthResponseSchema,
   meResponseSchema,
 } from '@veripay/shared';
@@ -30,6 +34,10 @@ export interface ApiClient {
   getHealth(): Promise<HealthPayload>;
   /** Protected route. Requires a configured token provider. */
   getMe(): Promise<AuthPrincipal>;
+  /** Starts Stripe Checkout so the buyer can fund a deal. */
+  fundDeal(dealRef: string): Promise<FundDealPayload>;
+  /** Starts Stripe Connect Express onboarding for the signed-in seller. */
+  startConnectOnboarding(): Promise<ConnectOnboardingPayload>;
 }
 
 const DEFAULT_TIMEOUT_MS = 5000;
@@ -47,8 +55,15 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
   const baseUrl = options.baseUrl.replace(/\/$/, '');
   const { getAccessToken } = options;
 
-  async function requestJson(path: string, options: { authenticated: boolean }): Promise<unknown> {
+  async function requestJson(
+    path: string,
+    options: { authenticated: boolean; method?: 'GET' | 'POST'; body?: unknown },
+  ): Promise<unknown> {
     const headers: Record<string, string> = { Accept: 'application/json' };
+
+    if (options.body !== undefined) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     if (options.authenticated) {
       let token: string | undefined;
@@ -66,14 +81,16 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
 
     let response: Response;
     try {
-      response = await doFetch(`${baseUrl}${path}`, {
-        method: 'GET',
+      const init: RequestInit = {
+        method: options.method ?? 'GET',
         headers,
-        // Auth is bearer-token based, so the browser never needs to attach
-        // cookies. This matches the API's `credentials: false` CORS policy.
         credentials: 'omit',
         signal: AbortSignal.timeout(timeoutMs),
-      });
+      };
+      if (options.body !== undefined) {
+        init.body = JSON.stringify(options.body);
+      }
+      response = await doFetch(`${baseUrl}${path}`, init);
     } catch (error) {
       throw new UpstreamUnavailableError('Could not reach the VeriPay API', { cause: error });
     }
@@ -106,11 +123,43 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
       return parsed.data.data;
     },
 
-    async getMe(): Promise<AuthPrincipal> {
+    async getMe() {
       const body = await requestJson('/api/me', { authenticated: true });
       const parsed = meResponseSchema.safeParse(body);
       if (!parsed.success) {
         throw new ValidationError('Unexpected /api/me response shape', {
+          details: parsed.error.issues,
+          cause: parsed.error,
+        });
+      }
+      return parsed.data.data;
+    },
+
+    async fundDeal(dealRef: string): Promise<FundDealPayload> {
+      const body = await requestJson('/api/payments/fund', {
+        authenticated: true,
+        method: 'POST',
+        body: { dealRef },
+      });
+      const parsed = fundDealResponseSchema.safeParse(body);
+      if (!parsed.success) {
+        throw new ValidationError('Unexpected fund checkout response shape', {
+          details: parsed.error.issues,
+          cause: parsed.error,
+        });
+      }
+      return parsed.data.data;
+    },
+
+    async startConnectOnboarding(): Promise<ConnectOnboardingPayload> {
+      const body = await requestJson('/api/connect/onboarding', {
+        authenticated: true,
+        method: 'POST',
+        body: {},
+      });
+      const parsed = connectOnboardingResponseSchema.safeParse(body);
+      if (!parsed.success) {
+        throw new ValidationError('Unexpected Connect onboarding response shape', {
           details: parsed.error.issues,
           cause: parsed.error,
         });

@@ -10,6 +10,8 @@ import { createAuthenticatorFromEnv } from './auth/jwt.js';
 import { EnvironmentError, loadEnv } from './config/env.js';
 import { createLogger } from './lib/logger.js';
 import { createShutdownCoordinator } from './lib/shutdown.js';
+import { parseStripeConfig } from './stripe/config.js';
+import { createStripeGateway } from './stripe/gateway.js';
 
 const SERVICE_VERSION = '0.1.0';
 
@@ -46,7 +48,15 @@ function main(): void {
     return;
   }
 
-  const app = createApp({ env, logger, authenticator, version: SERVICE_VERSION });
+  const stripe = buildStripeGateway(env, logger);
+
+  const app = createApp({
+    env,
+    logger,
+    authenticator,
+    ...(stripe !== undefined ? { stripe } : {}),
+    version: SERVICE_VERSION,
+  });
 
   const server = app.listen(env.API_PORT, () => {
     logger.info(
@@ -93,6 +103,21 @@ function main(): void {
     process.exitCode = 1;
     void shutdown.shutdown('uncaughtException', server);
   });
+}
+
+function buildStripeGateway(
+  env: ReturnType<typeof loadEnv>,
+  logger: ReturnType<typeof createLogger>,
+): ReturnType<typeof createStripeGateway> | undefined {
+  try {
+    return createStripeGateway(parseStripeConfig(env));
+  } catch (error) {
+    if (error instanceof EnvironmentError) {
+      logger.warn('Stripe not configured — fund and Connect routes return 502');
+      return undefined;
+    }
+    throw error;
+  }
 }
 
 main();

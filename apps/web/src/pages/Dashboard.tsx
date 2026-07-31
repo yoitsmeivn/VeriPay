@@ -103,7 +103,8 @@ const TABS = [
 
 function DealCard({ deal }: { deal: Deal }): React.JSX.Element {
   const navigate = useNavigate();
-  const dealHref = `/deal?as=${deal.side.toLowerCase()}&status=${deal.status.toLowerCase()}`;
+  const dealCode = deal.id.replace(/^Deal #/i, '');
+  const dealHref = `/deal?as=${deal.side.toLowerCase()}&status=${deal.status.toLowerCase()}&deal=${dealCode}`;
 
   async function handleCopyLink(): Promise<void> {
     const copied = await copyDealLink();

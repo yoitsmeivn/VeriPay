@@ -10,6 +10,8 @@ import { notFoundHandler } from './middleware/not-found.js';
 import { requestId } from './middleware/request-id.js';
 import { securityHeaders } from './middleware/security.js';
 import { apiRouter } from './routes/index.js';
+import { stripeWebhookRouter } from './routes/stripe-webhook.js';
+import { type StripeGateway } from './stripe/gateway.js';
 
 /**
  * Maximum accepted JSON body.
@@ -30,6 +32,8 @@ export interface AppDependencies {
    * the real one from the environment; tests inject a deterministic stub.
    */
   readonly authenticator: Authenticator;
+  /** Present when STRIPE_SECRET_KEY is configured. */
+  readonly stripe?: StripeGateway;
   readonly version?: string;
 }
 
@@ -69,9 +73,24 @@ export function createApp(deps: AppDependencies): Express {
 
   app.use(securityHeaders());
   app.use(corsPolicy(env));
+
+  // Stripe webhooks need the raw body for signature verification.
+  app.use(
+    '/api/webhooks/stripe',
+    express.raw({ type: 'application/json' }),
+    stripeWebhookRouter({ stripe: deps.stripe, logger }),
+  );
+
   app.use(express.json({ limit: JSON_BODY_LIMIT }));
 
-  app.use('/api', apiRouter({ version, authenticator: deps.authenticator }));
+  app.use(
+    '/api',
+    apiRouter({
+      version,
+      authenticator: deps.authenticator,
+      ...(deps.stripe !== undefined ? { stripe: deps.stripe } : {}),
+    }),
+  );
 
   app.use(notFoundHandler());
   // Must be last: Express identifies the error handler by its arity.

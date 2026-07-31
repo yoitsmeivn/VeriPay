@@ -1,4 +1,5 @@
 export * from './api.js';
+export * from './demo-deals.js';
 export * from './domain/currency.js';
 export * from './domain/ids.js';
 export * from './errors.js';

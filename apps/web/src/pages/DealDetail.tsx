@@ -11,13 +11,14 @@ import {
   Typography,
 } from '@heroui/react';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { AppShell } from '../components/AppShell.js';
 import { RoleTag } from '../components/RoleTag.js';
 import { TrustPanel } from '../components/TrustPanel.js';
 import { copyDealLink } from '../lib/copy-deal-link.js';
+import { useFundDeal } from '../lib/use-fund-deal.js';
 
 type Side = 'buyer' | 'seller';
 type Status = 'new' | 'connected' | 'held' | 'completed';
@@ -105,17 +106,42 @@ const PAYOUT_STEPS = [
 
 export function DealDetail(): React.JSX.Element {
   const navigate = useNavigate();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const side: Side = params.get('as') === 'buyer' ? 'buyer' : 'seller';
   const statusParam = params.get('status') as Status | null;
   const status: Status = statusParam && statusParam in STATUS_META ? statusParam : 'held';
+  const dealRef = (params.get('deal') ?? 'A7F3').toUpperCase();
+  const { fundDeal, isFunding } = useFundDeal();
 
   const isSeller = side === 'seller';
   const steps = isSeller ? SELLER_STEPS : BUYER_STEPS;
   const current = CURRENT_INDEX[status];
   const meta = STATUS_META[status];
 
-  const go = (s: Status): string => `/deal?as=${side}&status=${s}`;
+  const go = (s: Status): string => `/deal?as=${side}&status=${s}&deal=${dealRef}`;
+
+  useEffect(() => {
+    const fundReturn = params.get('fund');
+    if (fundReturn === null) {
+      return;
+    }
+
+    if (fundReturn === 'return') {
+      toast.success('Payment submitted', {
+        description:
+          'Stripe is confirming your payment. This deal updates when we receive the webhook — not from the redirect alone.',
+      });
+    } else if (fundReturn === 'cancelled') {
+      toast('Payment cancelled', {
+        description: 'You can fund the payment whenever you are ready.',
+      });
+    }
+
+    const next = new URLSearchParams(params);
+    next.delete('fund');
+    next.delete('session_id');
+    setParams(next, { replace: true });
+  }, [params, setParams]);
 
   async function handleCopy(): Promise<void> {
     const copied = await copyDealLink();
@@ -170,17 +196,15 @@ export function DealDetail(): React.JSX.Element {
                 <ActionCard
                   status={status}
                   isSeller={isSeller}
-                  onDeliver={() => navigate(go('completed'))}
+                  isFunding={isFunding}
+                  onDeliver={() => {
+                    void navigate(go('completed'));
+                  }}
                   onConfirm={() => {
                     toast.success('Receipt confirmed', { description: 'Releasing the payment to the seller.' });
-                    navigate(go('completed'));
+                    void navigate(go('completed'));
                   }}
-                  onFund={() => {
-                    toast.success('Redirecting to secure payment', {
-                      description: 'You’ll complete the payment with Stripe.',
-                    });
-                    navigate(go('held'));
-                  }}
+                  onFund={() => void fundDeal(dealRef)}
                   onCopy={() => void handleCopy()}
                 />
               </>
@@ -212,6 +236,7 @@ export function DealDetail(): React.JSX.Element {
 function ActionCard({
   status,
   isSeller,
+  isFunding,
   onDeliver,
   onConfirm,
   onFund,
@@ -219,6 +244,7 @@ function ActionCard({
 }: {
   status: Status;
   isSeller: boolean;
+  isFunding: boolean;
   onDeliver: () => void;
   onConfirm: () => void;
   onFund: () => void;
@@ -262,9 +288,9 @@ function ActionCard({
             after 48 hours.
           </p>
         </div>
-        <Button className="w-full" onPress={onFund}>
+        <Button className="w-full" onPress={onFund} isDisabled={isFunding}>
           <Icon icon="solar:lock-keyhole-minimalistic-linear" width={16} />
-          Fund the payment securely
+          {isFunding ? 'Opening Stripe Checkout…' : 'Fund the payment securely'}
         </Button>
       </Card>
     );
