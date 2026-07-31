@@ -1,40 +1,156 @@
 {
   "version": 1,
   "project": {
-    "initializedAt": "2026",
-    "merchantDisplayName": "VeriPlay",
-    "merchantId": "acct_1Tz00W1lqki09xaa",
-    "projectId": "",
-    "projectName" "VeriPlay"
+    "initializedAt": "2026-07-30T14:17:36.544Z",
+    "merchantDisplayName": "Focus Otter Solutions",
+    "merchantId": "acct_1JWuJCFVOljUQinz",
+    "projectId": "project_61V8IjYjA71UZau1L16PBsPfIiSQyg3ddHLm3bMlcXKy",
+    "projectName": "comic-book-studio"
   },
   "providers": {
     "auth0": {
-      "name": "Auth0"
+      "accountRequestId": "facctrq_61V8JeK67UC6bNFt116PBsPfIiSQyg3ddHLm3bMlcH8S",
+      "configuration": {
+        "locality": "us",
+        "naming_prefix": "hackathon"
+      },
+      "linkedAt": "2026-07-30T15:16:18.566Z",
+      "providerId": "prvdr_61UVctyxfLOj4FpVw5Bmi",
+      "providerName": "Auth0",
+      "redirectUrl": null,
+      "requestedAt": "2026-07-30T15:16:18.566Z",
+      "status": "complete"
     },
-    "supabase": {
-      "name": "Supabase"
+    "neon": {
+      "accountRequestId": "facctrq_61V8In7b4zwm4VgWt16PBsPfIiSQyg3ddHLm3bMlcH68",
+      "configuration": {},
+      "linkedAt": "2026-07-30T14:21:32.830Z",
+      "providerId": "prvdr_61UH8uNXFdoJUJOtT54AC",
+      "providerName": "Neon",
+      "redirectUrl": null,
+      "requestedAt": "2026-07-30T14:21:18.759Z",
+      "status": "complete"
+    },
+    "openrouter": {
+      "accountRequestId": "facctrq_61V8Ipyq2e0rkSIQY16PBsPfIiSQyg3ddHLm3bMlcGgC",
+      "configuration": {},
+      "linkedAt": "2026-07-30T14:24:15.285Z",
+      "providerId": "prvdr_61URImmFACEuDHEx651IO",
+      "providerName": "OpenRouter",
+      "redirectUrl": null,
+      "requestedAt": "2026-07-30T14:24:15.285Z",
+      "status": "complete"
+    },
+    "vercel": {
+      "accountRequestId": "facctrq_61V8ImnCa86mcE8uo16PBsPfIiSQyg3ddHLm3bMlcVGK",
+      "configuration": {},
+      "linkedAt": "2026-07-30T14:21:01.339Z",
+      "providerId": "prvdr_61ULUAr4zlQgZkvXY5LsG",
+      "providerName": "Vercel",
+      "redirectUrl": null,
+      "requestedAt": "2026-07-30T14:21:01.339Z",
+      "status": "complete"
     }
   },
   "resources": {
-    "auth0-plan": {
-      "name": "auth0-plan",
+    "auth0-client": {
+      "configuration": {
+        "name": "comic-book-studio"
+      },
+      "createdAt": "2026-07-30T14:44:22.069Z",
+      "lastRevealedAt": "2026-07-30T14:44:22.354Z",
+      "lastStatus": "complete",
+      "name": "auth0-client",
+      "providerId": "prvdr_61UVctyxfLOj4FpVw5Bmi",
       "providerName": "Auth0",
-      "serviceId": "free"
-    },
-    "supabase-plan": {
-      "name": "supabase-plan",
-      "providerName": "Supabase",
-      "serviceId": "free"
-    },
-    "veripay": {
-      "name": "veripay",
-      "providerName": "Supabase",
-      "serviceId": "project"
-    },
-    "veripay-spa": {
-      "name": "veripay-spa",
-      "providerName": "Auth0",
+      "resourceId": "fres_61V8J9NFpXs785ZDy16PBsPfIiSQyg3ddHLm3bMlc9n6",
       "serviceId": "client"
+    },
+    "auth0-client-2": {
+      "configuration": {
+        "name": "comic-book-studio"
+      },
+      "createdAt": "2026-07-30T15:16:23.921Z",
+      "lastRevealedAt": "2026-07-30T15:16:24.446Z",
+      "lastStatus": "complete",
+      "name": "auth0-client-2",
+      "providerId": "prvdr_61UVctyxfLOj4FpVw5Bmi",
+      "providerName": "Auth0",
+      "resourceId": "fres_61V8JeNmBZp4ygrp516PBsPfIiSQyg3ddHLm3bMlcY3E",
+      "serviceId": "client"
+    },
+    "auth0-plan": {
+      "configuration": {},
+      "createdAt": "2026-07-30T14:44:15.516Z",
+      "lastRevealedAt": "2026-07-30T14:44:15.824Z",
+      "lastStatus": "complete",
+      "name": "auth0-plan",
+      "providerId": "prvdr_61UVctyxfLOj4FpVw5Bmi",
+      "providerName": "Auth0",
+      "resourceId": "fres_61V8J9HOVWTjOSR7V16PBsPfIiSQyg3ddHLm3bMlc6UC",
+      "serviceId": "free"
+    },
+    "neon-plan": {
+      "configuration": {},
+      "createdAt": "2026-07-30T14:45:55.951Z",
+      "lastRevealedAt": "2026-07-30T14:45:56.661Z",
+      "lastStatus": "complete",
+      "name": "neon-plan",
+      "providerId": "prvdr_61UH8uNXFdoJUJOtT54AC",
+      "providerName": "Neon",
+      "resourceId": "fres_61V8JAx5pSquvsq2Q16PBsPfIiSQyg3ddHLm3bMlcCgC",
+      "serviceId": "free"
+    },
+    "neon-postgres": {
+      "configuration": {},
+      "createdAt": "2026-07-30T14:45:58.619Z",
+      "lastRevealedAt": "2026-07-30T14:45:59.074Z",
+      "lastStatus": "complete",
+      "name": "neon-postgres",
+      "providerId": "prvdr_61UH8uNXFdoJUJOtT54AC",
+      "providerName": "Neon",
+      "resourceId": "fres_61V8JAzpFTosQk4CU16PBsPfIiSQyg3ddHLm3bMlcIS8",
+      "serviceId": "postgres"
+    },
+    "openrouter-api": {
+      "configuration": {},
+      "createdAt": "2026-07-30T14:46:15.497Z",
+      "lastRevealedAt": "2026-07-30T14:46:16.028Z",
+      "lastStatus": "complete",
+      "name": "openrouter-api",
+      "providerId": "prvdr_61URImmFACEuDHEx651IO",
+      "providerName": "OpenRouter",
+      "resourceId": "fres_61V8JBFFsgzacjnJk16PBsPfIiSQyg3ddHLm3bMlcOy0",
+      "serviceId": "api"
+    },
+    "vercel-plan": {
+      "configuration": {},
+      "createdAt": "2026-07-30T14:45:35.713Z",
+      "lastRevealedAt": "2026-07-30T14:45:36.065Z",
+      "lastStatus": "complete",
+      "name": "vercel-plan",
+      "providerId": "prvdr_61ULUAr4zlQgZkvXY5LsG",
+      "providerName": "Vercel",
+      "resourceId": "fres_61V8JAbykdz3Ud02t16PBsPfIiSQyg3ddHLm3bMlc67s",
+      "serviceId": "hobby"
+    },
+    "vercel-project": {
+      "configuration": {
+        "name": "comic-book-studio"
+      },
+      "createdAt": "2026-07-30T14:45:38.554Z",
+      "lastRevealedAt": "2026-07-30T14:45:38.885Z",
+      "lastStatus": "complete",
+      "name": "vercel-project",
+      "providerId": "prvdr_61ULUAr4zlQgZkvXY5LsG",
+      "providerName": "Vercel",
+      "resourceId": "fres_61V8JAeGSJSp7VanH16PBsPfIiSQyg3ddHLm3bMlcWW0",
+      "serviceId": "project"
     }
+  },
+  "managedProjectVariableEnvKeys": {
+    ".env": [
+      "ELEVENLABS_API_KEY"
+    ]
   }
 }
