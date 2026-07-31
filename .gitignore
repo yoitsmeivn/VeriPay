@@ -1,4 +1,4 @@
-.projects/state.local.json
+
 
 # --- VeriPay ---------------------------------------------------------------
 # The Stripe Projects CLI rewrites its own rules on every `stripe projects add`
