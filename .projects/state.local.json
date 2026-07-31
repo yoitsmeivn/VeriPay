@@ -5,7 +5,7 @@
     "merchantDisplayName": "VeriPlay",
     "merchantId": "acct_1Tz00W1lqki09xaa",
     "projectId": "",
-    "projectName" "VeriPlay""
+    "projectName" "VeriPlay"
   },
   "providers": {
     "auth0": {
