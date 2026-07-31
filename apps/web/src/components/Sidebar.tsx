@@ -1,3 +1,4 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import { Avatar, Button } from '@heroui/react';
 import { Icon } from '@iconify/react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -10,10 +11,26 @@ const NAV = [
   { label: 'Settings', icon: 'solar:settings-linear', to: '/settings' },
 ] as const;
 
+function initialsFor(name: string): string {
+  const parts = name.trim().split(/\s+/).filter((part) => part.length > 0);
+  if (parts.length === 0) {
+    return '?';
+  }
+  if (parts.length === 1) {
+    return parts[0]?.slice(0, 2).toUpperCase() ?? '?';
+  }
+  return `${parts[0]?.[0] ?? ''}${parts[1]?.[0] ?? ''}`.toUpperCase();
+}
+
 /** Persistent left navigation for the authenticated app. */
 export function Sidebar(): React.JSX.Element {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { user, logout } = useAuth0();
+
+  const displayName = user?.name ?? user?.email ?? 'Signed in';
+  const email = user?.email ?? '';
+  const initials = initialsFor(displayName);
 
   return (
     <aside className="sticky top-0 flex h-screen w-[236px] shrink-0 flex-col gap-1 self-start border-r border-border bg-background-secondary px-3 pb-4 pt-4">
@@ -46,14 +63,28 @@ export function Sidebar(): React.JSX.Element {
         })}
       </nav>
 
-      <div className="mt-auto flex items-center gap-2.5 rounded-lg px-2 py-1.5">
+      <div className="mt-auto flex items-center gap-2 rounded-lg px-2 py-1.5">
         <Avatar size="sm">
-          <Avatar.Fallback className="bg-accent-soft text-[11px] text-accent">AB</Avatar.Fallback>
+          {user?.picture !== undefined ? (
+            <Avatar.Image src={user.picture} alt="" />
+          ) : null}
+          <Avatar.Fallback className="bg-accent-soft text-[11px] text-accent">{initials}</Avatar.Fallback>
         </Avatar>
-        <div className="min-w-0">
-          <p className="text-[13px] font-semibold leading-tight text-foreground">Amir Beck</p>
-          <p className="truncate text-[11px] leading-tight text-muted">beck@amirbeck.com</p>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[13px] font-semibold leading-tight text-foreground">{displayName}</p>
+          {email !== '' ? (
+            <p className="truncate text-[11px] leading-tight text-muted">{email}</p>
+          ) : null}
         </div>
+        <Button
+          size="sm"
+          variant="ghost"
+          isIconOnly
+          aria-label="Log out"
+          onPress={() => void logout({ logoutParams: { returnTo: window.location.origin } })}
+        >
+          <Icon icon="solar:logout-2-linear" width={16} />
+        </Button>
       </div>
     </aside>
   );
