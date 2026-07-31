@@ -1,5 +1,12 @@
 {
   "version": 1,
+  "project": {
+    "initializedAt": "2026",
+    "merchantDisplayName": "VeriPlay",
+    "merchantId": "acct_1Tz00W1lqki09xaa",
+    "projectId": "",
+    "projectName" "VeriPlay""
+  },
   "providers": {
     "auth0": {
       "name": "Auth0"
