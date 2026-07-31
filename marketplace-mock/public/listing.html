@@ -54,17 +54,29 @@
       return params.get("id");
     }
 
+    function renderAvatar(person) {
+      if (person.avatarUrl) {
+        return `<img class="avatar-img" src="${person.avatarUrl}" alt="${person.name}" loading="lazy" />`;
+      }
+      return `<div class="avatar-fallback">${person.avatarEmoji}</div>`;
+    }
+
+    function renderListingPhoto(listing) {
+      if (listing.imageUrl) {
+        return `<img class="detail-photo-img" src="${listing.imageUrl}" alt="${listing.title}" loading="lazy" />`;
+      }
+      return `<div class="detail-photo-fallback" style="background:${listing.color}">${listing.emoji}</div>`;
+    }
+
     function renderListing(listing) {
       const container = document.getElementById("detail-container");
-      // Direction comes from the server; never inferred from the listing shape.
       const userSells = listing.direction === "user-sells";
-      // The person on the other side of the chat.
       const other = userSells ? listing.counterparty : listing.seller;
       const ctaLabel = userSells ? "💬 Message Buyer" : "💬 Message Seller";
       const partyLabel = userSells ? "Interested buyer" : "Seller information";
       container.innerHTML = `
         <div class="detail-wrap">
-          <div class="detail-photo" style="background:${listing.color}">${listing.emoji}</div>
+          <div class="detail-photo">${renderListingPhoto(listing)}</div>
           <div>
             <div class="detail-info-card">
               <h1 class="price">$${listing.price.toLocaleString()}</h1>
@@ -78,7 +90,7 @@
 
               <div class="section-title">${partyLabel}</div>
               <div class="seller-card">
-                <div class="seller-avatar">${other.avatarEmoji}</div>
+                <div class="seller-avatar">${renderAvatar(other)}</div>
                 <div>
                   <div class="seller-name">${other.name}</div>
                   <div class="seller-stat">⭐ ${other.rating} (${other.ratingCount} ratings)</div>

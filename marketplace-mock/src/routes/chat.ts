@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { randomUUID } from "crypto";
-import { findListing } from "../data";
+import { findListing } from "../db/listings";
 import { getAgent, isKnownListing, getRoles } from "../agents/registry";
 import { findAgreementThisTurn } from "../agents/tools/agreement";
 import { messageText } from "../agents/skills/negotiation";

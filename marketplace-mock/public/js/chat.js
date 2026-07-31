@@ -21,7 +21,17 @@ function openChat(listing) {
   chatState.other = other;
 
   document.getElementById("chat-seller-name").textContent = other.name;
-  document.getElementById("chat-seller-avatar").textContent = other.avatarEmoji;
+  const avatarEl = document.getElementById("chat-seller-avatar");
+  avatarEl.innerHTML = "";
+  if (other.avatarUrl) {
+    const img = document.createElement("img");
+    img.src = other.avatarUrl;
+    img.alt = other.name;
+    img.className = "chat-avatar-img";
+    avatarEl.appendChild(img);
+  } else {
+    avatarEl.textContent = other.avatarEmoji;
+  }
   document.getElementById("chat-listing-title").textContent = listing.title;
   document.getElementById("chat-listing-price").textContent = `$${listing.price}`;
 

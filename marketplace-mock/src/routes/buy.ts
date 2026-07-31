@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { listings, orders, Order } from "../data";
+import { findListing } from "../db/listings";
+import { orders, Order } from "../data";
 
 const router = Router();
 
@@ -10,7 +11,7 @@ const router = Router();
 // this just stands up the reference both sides would use once it is.
 router.post("/", (req, res) => {
   const { listingId } = req.body as { listingId?: string };
-  const listing = listings.find((l) => l.id === listingId);
+  const listing = listingId ? findListing(listingId) : undefined;
 
   if (!listing) {
     return res.status(404).json({ error: "Listing not found" });
