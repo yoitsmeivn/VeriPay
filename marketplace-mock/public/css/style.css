@@ -1,0 +1,737 @@
+:root {
+  --fb-blue: #1877f2;
+  --fb-blue-dark: #166fe5;
+  --bg: #f0f2f5;
+  --card-bg: #ffffff;
+  --text: #050505;
+  --text-secondary: #65676b;
+  --border: #ced0d4;
+  --green: #42b72a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Top nav */
+.navbar {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-left .logo {
+  color: var(--fb-blue);
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.search-box {
+  background: var(--bg);
+  border-radius: 20px;
+  padding: 8px 16px;
+  width: 240px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.navbar-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.navbar-right .pill {
+  background: var(--bg);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+/* Layout */
+.page-wrap {
+  display: flex;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.sidebar {
+  width: 320px;
+  padding: 20px 12px;
+  flex-shrink: 0;
+}
+
+.sidebar h2 {
+  font-size: 24px;
+  margin: 4px 8px 16px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.sidebar-link.active {
+  background: #e7f3ff;
+  color: var(--fb-blue);
+  font-weight: 600;
+}
+
+.sidebar-link .icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+
+.sidebar hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 16px 8px;
+}
+
+.sidebar-section-title {
+  font-weight: 600;
+  padding: 0 8px;
+  margin-bottom: 8px;
+}
+
+.category-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+main.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.content-header h1 {
+  font-size: 22px;
+}
+
+.create-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Listings grid */
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.listing-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.listing-card:hover {
+  transform: translateY(-2px);
+}
+
+.listing-card .thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.listing-card .thumb-img,
+.detail-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.listing-card .thumb-fallback,
+.detail-photo-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+}
+
+.detail-photo-fallback {
+  font-size: 180px;
+}
+
+.listing-card .info {
+  padding: 10px 12px 14px;
+}
+
+.listing-card .price {
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.listing-card .title {
+  font-size: 14px;
+  margin: 2px 0;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listing-card .meta {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Listing detail page */
+.detail-wrap {
+  max-width: 1100px;
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  padding: 0 20px;
+}
+
+.detail-photo {
+  background: var(--card-bg);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.detail-info-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.detail-info-card h1.price {
+  font-size: 26px;
+  margin: 0 0 4px;
+}
+
+.detail-info-card h2.title {
+  font-size: 17px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.detail-info-card .meta {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--fb-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--fb-blue-dark);
+}
+
+.btn-secondary {
+  background: #e4e6eb;
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: #d8dade;
+}
+
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 16px 0;
+}
+
+.seller-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.seller-avatar {
+  background: var(--bg);
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatar-img,
+.chat-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatar-fallback {
+  font-size: 40px;
+}
+
+.chat-avatar-img {
+  width: 32px;
+  height: 32px;
+}
+
+.create-modal {
+  background: var(--card-bg);
+  border-radius: 12px;
+  width: min(520px, calc(100vw - 32px));
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.create-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.create-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.create-copy {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+#create-prompt {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  resize: vertical;
+  margin-bottom: 12px;
+}
+
+.create-status {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  min-height: 20px;
+}
+
+.empty-msg {
+  color: var(--text-secondary);
+  padding: 24px 8px;
+}
+
+.seller-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.seller-stat {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.section-title {
+  font-weight: 600;
+  margin: 20px 0 8px;
+}
+
+.description-card,
+.details-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  margin-top: 16px;
+}
+
+.description-text {
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.back-link {
+  display: inline-block;
+  margin: 16px 0 0 20px;
+  font-size: 14px;
+  color: var(--fb-blue);
+  font-weight: 600;
+}
+
+/* Chat modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  align-items: flex-end;
+  justify-content: flex-end;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.chat-window {
+  width: 340px;
+  height: 460px;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-header {
+  background: var(--fb-blue);
+  color: white;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-header .who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.chat-header .close-btn {
+  cursor: pointer;
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: white;
+}
+
+.chat-context {
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #f8f9fa;
+}
+
+.msg {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.msg.them {
+  background: #e4e6eb;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.msg.me {
+  background: var(--fb-blue);
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.msg.system {
+  align-self: center;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Payment link - its own bubble, deliberately distinct from seller chat so it
+   never reads as something the seller typed. */
+.msg.link {
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.msg.link .link-label {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.msg.link .link-action {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--fb-blue);
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.msg.link .link-action.disabled {
+  background: #e4e6eb;
+  color: var(--text-secondary);
+  cursor: default;
+}
+
+/* Selling-side markers */
+.badge-selling {
+  display: inline-block;
+  margin-bottom: 4px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: #e7f3ff;
+  color: var(--fb-blue);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.you-are-selling {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #e7f3ff;
+  color: var(--fb-blue);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.section-note {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.content-header h1 {
+  margin: 0;
+}
+
+.chat-input-row {
+  display: flex;
+  padding: 10px;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.chat-input-row input {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 8px 14px;
+  font-size: 14px;
+  outline: none;
+}
+
+.chat-input-row button {
+  background: var(--fb-blue);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.typing-indicator {
+  align-self: flex-start;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+  padding-left: 4px;
+}
+
+/* Order / buy stub page */
+.order-wrap {
+  max-width: 560px;
+  margin: 40px auto;
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.order-wrap h1 {
+  font-size: 20px;
+  margin-top: 0;
+}
+
+.badge-pending {
+  display: inline-block;
+  background: #fff4e5;
+  color: #b26a00;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+.order-row:last-child {
+  border-bottom: none;
+}
+
+.order-note {
+  margin-top: 20px;
+  padding: 14px;
+  background: #f0f2f5;
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.link-box {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.link-box input {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.link-box button {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.loading,
+.error-msg {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+}

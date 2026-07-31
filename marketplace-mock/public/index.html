@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Marketplace (Mock)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <div class="logo">facebook</div>
+      <div class="search-box">🔍 Search Marketplace</div>
+    </div>
+    <div class="navbar-title">Marketplace</div>
+    <div class="navbar-right">
+      <div class="pill">🏠</div>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <aside class="sidebar">
+      <h2>Marketplace</h2>
+      <div class="sidebar-link active"><span class="icon">🏬</span> Browse all</div>
+      <div class="sidebar-link"><span class="icon">🔔</span> Notifications</div>
+      <div class="sidebar-link"><span class="icon">💬</span> Inbox</div>
+      <a class="sidebar-link" href="#selling-header"><span class="icon">🏷️</span> Your listings</a>
+      <hr />
+      <div class="sidebar-section-title">Categories</div>
+      <div class="category-chip">🚲 Bicycles</div>
+      <div class="category-chip">🛋️ Furniture</div>
+      <div class="category-chip">🎟️ Event tickets</div>
+      <div class="category-chip">🎮 Video games &amp; consoles</div>
+    </aside>
+
+    <main class="content">
+      <div class="content-header">
+        <div>
+          <h1>Today's picks</h1>
+          <span class="section-note">You are the buyer &middot; message a seller to negotiate</span>
+        </div>
+        <button id="create-listing-btn" class="create-btn">+ Create new listing</button>
+      </div>
+      <div id="listings-grid" class="listings-grid">
+        <div class="loading">Loading listings...</div>
+      </div>
+
+      <div class="content-header" id="selling-header">
+        <div>
+          <h1>My Listings</h1>
+          <span class="section-note">You are the seller &middot; buyers message you</span>
+        </div>
+      </div>
+      <div id="my-listings-grid" class="listings-grid">
+        <div class="loading">Loading your listings...</div>
+      </div>
+    </main>
+  </div>
+
+  </div>
+
+  <div id="create-overlay" class="modal-overlay">
+    <div class="create-modal">
+      <div class="create-header">
+        <h2>Create a listing with AI</h2>
+        <button id="create-close-btn" class="close-btn">&times;</button>
+      </div>
+      <p class="create-copy">
+        Describe what you want to sell (or leave blank for a surprise). We'll invent a seller,
+        photo, and listing, then save it to the database.
+      </p>
+      <textarea id="create-prompt" rows="4" placeholder="e.g. vintage road bike, barely used"></textarea>
+      <button id="create-submit-btn" class="btn btn-primary">Generate listing</button>
+      <div id="create-status" class="create-status"></div>
+    </div>
+  </div>
+
+  <script>
+    function renderThumb(listing) {
+      if (listing.imageUrl) {
+        return `<img class="thumb-img" src="${listing.imageUrl}" alt="${listing.title}" loading="lazy" />`;
+      }
+      return `<div class="thumb-fallback" style="background:${listing.color}">${listing.emoji}</div>`;
+    }
+
+    function renderCards(grid, listings, { mine = false } = {}) {
+      grid.innerHTML = "";
+      if (!listings.length) {
+        grid.innerHTML = `<div class="empty-msg">No listings yet.</div>`;
+        return;
+      }
+      listings.forEach((listing) => {
+        const card = document.createElement("a");
+        card.href = `/listing.html?id=${listing.id}`;
+        card.className = "listing-card";
+        card.innerHTML = `
+          <div class="thumb">${renderThumb(listing)}</div>
+          <div class="info">
+            ${mine ? '<div class="badge-selling">Your listing</div>' : ""}
+            <div class="price">$${listing.price}</div>
+            <div class="title">${listing.title}</div>
+            <div class="meta">${listing.location} · ${listing.distance}</div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    async function loadInto(url, gridId, opts) {
+      const grid = document.getElementById(gridId);
+      try {
+        const res = await fetch(url);
+        renderCards(grid, await res.json(), opts);
+      } catch (err) {
+        grid.innerHTML = `<div class="error-msg">Couldn't load listings. Is the server running?</div>`;
+      }
+    }
+
+    loadInto("/api/listings", "listings-grid");
+    loadInto("/api/listings/mine", "my-listings-grid", { mine: true });
+
+    const createOverlay = document.getElementById("create-overlay");
+    const createPrompt = document.getElementById("create-prompt");
+    const createStatus = document.getElementById("create-status");
+    const createSubmit = document.getElementById("create-submit-btn");
+
+    document.getElementById("create-listing-btn").addEventListener("click", () => {
+      createStatus.textContent = "";
+      createOverlay.classList.add("open");
+      createPrompt.focus();
+    });
+
+    document.getElementById("create-close-btn").addEventListener("click", () => {
+      createOverlay.classList.remove("open");
+    });
+
+    createSubmit.addEventListener("click", async () => {
+      createSubmit.disabled = true;
+      createStatus.textContent = "Generating listing and seller profile...";
+      try {
+        const res = await fetch("/api/listings/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: createPrompt.value.trim() }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || "Generation failed");
+        createOverlay.classList.remove("open");
+        createPrompt.value = "";
+        await loadInto("/api/listings", "listings-grid");
+        window.location.href = `/listing.html?id=${data.id}`;
+      } catch (err) {
+        createStatus.textContent = err.message || "Could not generate a listing.";
+      } finally {
+        createSubmit.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

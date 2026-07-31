@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Order (Mock)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <div class="logo">facebook</div>
+    </div>
+    <div class="navbar-title">Marketplace</div>
+    <div class="navbar-right">
+      <div class="pill">🏠</div>
+    </div>
+  </nav>
+
+  <div id="order-container">
+    <div class="loading">Loading order...</div>
+  </div>
+
+  <script>
+    function getOrderId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("id");
+    }
+
+    async function loadOrder() {
+      const id = getOrderId();
+      const container = document.getElementById("order-container");
+      if (!id) {
+        container.innerHTML = `<div class="error-msg">No order specified.</div>`;
+        return;
+      }
+      try {
+        const res = await fetch(`/api/orders/${id}`);
+        if (!res.ok) throw new Error("Not found");
+        const order = await res.json();
+        renderOrder(order);
+      } catch (err) {
+        container.innerHTML = `<div class="error-msg">Order not found.</div>`;
+      }
+    }
+
+    function renderOrder(order) {
+      const container = document.getElementById("order-container");
+      const fullLink = `${window.location.origin}/order.html?id=${order.id}`;
+      container.innerHTML = `
+        <div class="order-wrap">
+          <div class="badge-pending">Pending configuration</div>
+          <h1>Order started for "${order.listingTitle}"</h1>
+
+          <div class="order-row"><span>Order ID</span><span>${order.id}</span></div>
+          <div class="order-row"><span>Item price</span><span>$${order.price.toLocaleString()}</span></div>
+          <div class="order-row"><span>Buyer</span><span>${order.buyer.name}</span></div>
+          <div class="order-row"><span>Seller</span><span>${order.seller.name}</span></div>
+          <div class="order-row"><span>Created</span><span>${new Date(order.createdAt).toLocaleString()}</span></div>
+
+          <div class="order-note">
+            This reference links the buyer and seller to this listing. Payment, shipping/pickup details,
+            and buyer protection are <strong>not configured yet</strong> - this link is a placeholder for
+            whichever checkout flow gets wired in later (Stripe, Meta Pay, in-person cash handoff, etc.).
+          </div>
+
+          <div class="section-title">Order link</div>
+          <div class="link-box">
+            <input type="text" readonly value="${fullLink}" id="order-link-input" />
+            <button id="copy-link-btn">Copy</button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("copy-link-btn").addEventListener("click", () => {
+        const input = document.getElementById("order-link-input");
+        input.select();
+        navigator.clipboard.writeText(input.value).then(() => {
+          const btn = document.getElementById("copy-link-btn");
+          const original = btn.textContent;
+          btn.textContent = "Copied!";
+          setTimeout(() => (btn.textContent = original), 1500);
+        });
+      });
+    }
+
+    loadOrder();
+  </script>
+</body>
+</html>

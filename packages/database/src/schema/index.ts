@@ -13,4 +13,4 @@
  *      then `npm run db:migrate` to apply it.
  */
 
-export {};
+export * from './marketplace.js';
